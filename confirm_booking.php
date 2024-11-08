@@ -168,7 +168,7 @@
             let payment = price * count_days;
 
             // Hiển thị thông tin thanh toán
-            pay_info.innerHTML = "Total days: " + count_days + "<br>Total payment: $" + payment.toFixed(2);
+            pay_info.innerHTML = "Total days: " + count_days + "<br>Total payment:" + payment.toFixed(2)+ "VNĐ";
             
             // Bật nút thanh toán
             booking_form.elements['pay_now'].removeAttribute('disabled');
