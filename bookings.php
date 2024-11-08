@@ -30,7 +30,7 @@ include("connect.inp");
 
 
 // Truy vấn để lấy thông tin từ bảng booking_order và rooms
-$query = "SELECT bo.*, r.room_name, r.price 
+$query = "SELECT bo.*, r.room_name, r.price
           FROM booking_order AS bo 
           INNER JOIN rooms AS r ON bo.room_id = r.room_id
           WHERE bo.booking_status IN ('Confirmed', 'Pending', 'Cancelled')
@@ -62,20 +62,20 @@ if ($result->num_rows > 0) {
         <div class='col-md-4 px-4 mb-4'>
             <div class='bg-white p-3 rounded shadow-sm'>
                 <h5 class='fw-bold'>{$data['room_name']}</h5>
-                <p>₹{$data['price']} per night</p>
+                <p>{$data['price']}VND/Đêm</p>
                 <p>
                     <b>Check in:</b> $checkin <br>
                     <b>Check out:</b> $checkout
                 </p>
                 <p>
-                    <b>Amount:</b> ₹{$data['price']} <br>
+                    <b>Amount:</b> {$data['price']} VND <br>
                     <b>Order ID:</b> {$data['order_id']} <br>
                     <b>Date:</b> $date
                 </p>
                 <p>
                     <span class='badge $status_bg'>$status_text</span>
                 </p>
-                <button class='btn btn-outline-dark btn-sm'>Download PDF</button>
+                
 bookings;
 
 
