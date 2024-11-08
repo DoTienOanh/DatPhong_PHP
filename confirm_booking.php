@@ -75,7 +75,7 @@
                 </div>    
             </div>
             <h5><?php echo$room_data['room_name'];?></h5>
-            <h6 class="mb-4"><?php echo $room_data['price'];?></h6>
+            <h6 class="mb-4" id="price"><?php echo $room_data['price'];?></h6>
         </div>
         <div class="col-lg-5 col-md-12 px-4">
             <div class="card mb-4 border-0 shadow-sm rounded-3">
@@ -123,6 +123,12 @@
         </div>
     </div>
 <script>
+    function date_diff(startDate, endDate) {
+        // Tính số ngày giữa hai ngày
+        const diffTime = Math.abs(endDate - startDate);
+        return Math.ceil(diffTime / (1000 * 60 * 60 * 24)); // Chuyển đổi từ milliseconds sang days
+    }
+
     function validateDates() {
     let checkin = booking_form.elements['checkin'].value;
     let checkout = booking_form.elements['checkout'].value;
@@ -150,9 +156,29 @@
     }
     
     // Nếu ngày hợp lệ, bật nút và ẩn thông báo lỗi
-    pay_info.textContent = "";
-    booking_form.elements['pay_now'].removeAttribute('disabled');
-    return true;
+    //pay_info.textContent = "";
+    //booking_form.elements['pay_now'].removeAttribute('disabled');
+    //return true;
+
+    // Tính số ngày
+    if (checkin && checkout) {
+            // Tính số ngày
+            let count_days = date_diff(checkinDate, checkoutDate);
+            let price = parseFloat(document.getElementById('price').textContent); // Lấy giá phòng từ phần tử HTML
+            let payment = price * count_days;
+
+            // Hiển thị thông tin thanh toán
+            pay_info.innerHTML = "Total days: " + count_days + "<br>Total payment:" + payment.toFixed(2)+ "VNĐ";
+            
+            // Bật nút thanh toán
+            booking_form.elements['pay_now'].removeAttribute('disabled');
+        } else {
+            // Nếu chưa chọn đủ ngày, ẩn thông tin thanh toán
+            pay_info.textContent = "Provide check-in & check-out date!";
+            booking_form.elements['pay_now'].setAttribute('disabled', true);
+        }
+
+        return true;
 }
 
 // Gắn sự kiện onchange vào các input ngày
