@@ -78,10 +78,6 @@ if ($result->num_rows > 0) {
                 <button class='btn btn-outline-dark btn-sm'>Download PDF</button>
 bookings;
 
-        // Hiển thị nút "Rate & Review" nếu trạng thái là "booked"
-        if ($status_text == "booked") {
-            echo "<button class='btn btn-outline-dark btn-sm ms-2'>Rate & Review</button>";
-        }
 
         // Hiển thị nút "Refund in Process" nếu trạng thái là "cancelled"
         if ($status_text == "cancelled") {
