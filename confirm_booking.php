@@ -114,7 +114,15 @@
                             </div>
                             <div class="col-12">
                             <h6 class="mb-3 text-danger" id="pay_info">Provide check-in & check-out date!</h6>
-                            <button name="pay_now" class="btn-pay-now " disabled>Pay Now</button>
+                            <!--<button name="pay_now" class="btn-pay-now " disabled>Pay Now</button>-->
+                                <div id="pay_now">
+                                    <!-- Initialize the JS-SDK -->
+                                <script
+                                    src="https://www.paypal.com/sdk/js?client-id=AcRFoe-qt7M7cdr5naUgz1mUGNZkjehzrqzTLh0tYsK-syVpAVkI3lLRkhHC-xhtU0ZpgXMdC68J0m6A&buyer-country=US&currency=USD&components=buttons&enable-funding=card&disable-funding=venmo,paylater"
+                                    data-sdk-integration-source="developer-studio"
+                                ></script>
+                                <script src="app.js"></script>
+                                </div>
                             </div>
                         </div> 
                     </form>
