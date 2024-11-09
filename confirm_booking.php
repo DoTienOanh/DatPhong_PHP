@@ -60,6 +60,7 @@
         }
 
         $room_data = $result->fetch_assoc();
+        $room_price = $room_data['price']; // Store room price for JavaScript
     ?>
     
     <div class="container">
