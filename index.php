@@ -121,123 +121,64 @@ require('inc/header.php');
  <h2 class="mt-5 pt-4 mb-4 text-center fw-bold h-font">OUR ROOMS</h2>
  <div class="container">
   <div class="row">
-    <div class="col-lg-4 col-md-6 my-3">
-      <div class="card border-0 shadow" style="max-width: 350px; margin: auto;">
-        <img src="images/nature-1.jpg" class="card-img-top">
-        <div class="card-body">
-          <h5>Phòng Standard</h5>
-          <h6 class="mb-4">500.000VND/Đêm</h6>
-          <div class="features mb-4">
-            <h6 class="mb-1">Gồm</h6>
-            <span class="badge rounded-pill bg-light text-dark text-wrap">
-              2 Giường
-            </span>
-            <span class="badge rounded-pill bg-light text-dark text-wrap">
-              1 Phòng tắm
-            </span>
-            <span class="badge rounded-pill bg-light text-dark text-wrap">
-              1 Ban công
-            </span>
-          </div>
-          <div class="facilities mb-4">
-            <h6 class="mb-1">Cơ sở vật chất</h6>
-            <span class="badge rounded-pill bg-light text-dark text-wrap">
-              Wifi
-            </span>
-            <span class="badge rounded-pill bg-light text-dark text-wrap">
-              Tivi
-            </span>
-            <span class="badge rounded-pill bg-light text-dark text-wrap">
-              Điều hòa
-            </span>
-          </div>
-          <div class="d-flex justify-content-evenly">
-            <a href="#" class="btn btn-sm text-white custom-bg shadow-none">Đặt ngay</a>
-            <a href="#" class="btn btn-sm btn-outline-dark shadow-none">Chi tiết</a>
-          </div>
+  
+    
 
-         
-        </div>
-      </div>
-    </div>
-    <div class="col-lg-4 col-md-6 my-3">
-      <div class="card border-0 shadow" style="max-width: 350px; margin: auto;">
-        <img src="images/nature-3.jpg" class="card-img-top">
-        <div class="card-body">
-          <h5>Phòng phong cách cổ điển</h5>
-          <h6 class="mb-4">1.500.000VND/Đêm</h6>
-          <div class="features mb-4">
-            <h6 class="mb-1">Gồm</h6>
-            <span class="badge rounded-pill bg-light text-dark text-wrap">
-              2 Giường
-            </span>
-            <span class="badge rounded-pill bg-light text-dark text-wrap">
-              1 Phòng tắm
-            </span>
-            <span class="badge rounded-pill bg-light text-dark text-wrap">
-              1 Ban công
-            </span>
-          </div>
-          <div class="facilities mb-4">
-            <h6 class="mb-1">Cơ sở vật chất</h6>
-            <span class="badge rounded-pill bg-light text-dark text-wrap">
-              Wifi
-            </span>
-            <span class="badge rounded-pill bg-light text-dark text-wrap">
-              Tivi
-            </span>
-            <span class="badge rounded-pill bg-light text-dark text-wrap">
-              Điều hòa
-            </span>
-          </div>
-          <div class="d-flex justify-content-evenly">
-            <a href="#" class="btn btn-sm text-white custom-bg shadow-none">Đặt ngay</a>
-            <a href="#" class="btn btn-sm btn-outline-dark shadow-none">Chi tiết</a>
-          </div>
+    <?php
+        include("connect.inp");
+        $room_res = mysqli_query($con,"SELECT * FROM `rooms` WHERE status = 'available'");
+        
 
-         
-        </div>
-      </div>
-    </div>
-    <div class="col-lg-4 col-md-6 my-3">
-      <div class="card border-0 shadow" style="max-width: 350px; margin: auto;">
-        <img src="images/nature-2.jpg" class="card-img-top">
-        <div class="card-body">
-          <h5>Phòng phong cách Đông Dương</h5>
-          <h6 class="mb-4">700.000VND/Đêm</h6>
-          <div class="features mb-4">
-            <h6 class="mb-1">Gồm</h6>
-            <span class="badge rounded-pill bg-light text-dark text-wrap">
-              2 Giường
-            </span>
-            <span class="badge rounded-pill bg-light text-dark text-wrap">
-              1 Phòng tắm
-            </span>
-            <span class="badge rounded-pill bg-light text-dark text-wrap">
-              1 Ban công
-            </span>
-          </div>
-          <div class="facilities mb-4">
-            <h6 class="mb-1">Cơ sở vật chất</h6>
-            <span class="badge rounded-pill bg-light text-dark text-wrap">
-              Wifi
-            </span>
-            <span class="badge rounded-pill bg-light text-dark text-wrap">
-              Tivi
-            </span>
-            <span class="badge rounded-pill bg-light text-dark text-wrap">
-              Điều hòa
-            </span>
-          </div>
-          <div class="d-flex justify-content-evenly">
-            <a href="#" class="btn btn-sm text-white custom-bg shadow-none">Đặt ngay</a>
-            <a href="#" class="btn btn-sm btn-outline-dark shadow-none">Chi tiết</a>
-          </div>
+        while($room_data = mysqli_fetch_assoc($room_res))
+        {
+           //get facilities of room
+           $fac_q = mysqli_query($con,"SELECT f.facility_name FROM `facilities` f
+            INNER JOIN room_facilities rfac ON f.facility_id=rfac.facility_id
+             WHERE rfac.room_id = '{$room_data['room_id']}'");
+           $facilities_data = "";
+           while($fac_row = mysqli_fetch_assoc($fac_q)){
+            $facilities_data .= "<span class='badge rounded-pill bg-light text-dark text-wrap'>
+            $fac_row[facility_name]
+            </span>";
+           }
+           //get images
+           
+           $room_thumb = $room_data['image_url'] ? $room_data['image_url'] : "default.jpg";
+        // print room card 
+        echo <<<data
+          <div class="col-lg-4 col-md-6 my-3">
+            <div class="card border-0 shadow" style="max-width: 350px; margin: auto;">
+              <img src="images/$room_thumb" class="card-img-top">
+              <div class="card-body">
+                <h5>$room_data[room_name]</h5>
+                <h6 class="mb-4">$room_data[price]VND</h6>
+                <div class="features mb-4">
+                  <h6 class="mb-1">Mô tả</h6>
+                  $room_data[description]
+                </div>
+                <div class="facilities mb-4">
+                  <h6 class="mb-1">Cơ sở vật chất</h6>
+                  $facilities_data
+                </div>
+                <div class="d-flex justify-content-evenly">
+                  <a href="#" class="btn btn-sm text-white custom-bg shadow-none">Đặt ngay</a>
+                  <a href="#" class="btn btn-sm btn-outline-dark shadow-none">Chi tiết</a>
+                </div>
 
-         
-        </div>
-      </div>
-    </div>
+              
+              </div>
+            </div>
+          </div>
+          
+
+        data;
+
+        }
+        ?>
+
+
+
+      
     <div class="col-lg-12 text-center mt-5">
       <a href="#" class="btn btn-sm btn-outline-dark rounded-0 fw-bold shadow-none">More Rooms</a>
     </div>
