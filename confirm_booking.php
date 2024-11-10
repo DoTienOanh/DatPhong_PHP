@@ -116,7 +116,7 @@
                             <div class="col-12">
                             <h6 class="mb-3 text-danger" id="pay_info">Provide check-in & check-out date!</h6>
                             <!--<button name="pay_now" class="btn-pay-now " disabled>Pay Now</button>-->
-                                <div id="pay_now">
+                                <div class="pay_now" id="pay_now">
                                     <!-- Initialize the JS-SDK -->
                                 <script
                                     src="https://www.paypal.com/sdk/js?client-id=AcRFoe-qt7M7cdr5naUgz1mUGNZkjehzrqzTLh0tYsK-syVpAVkI3lLRkhHC-xhtU0ZpgXMdC68J0m6A&buyer-country=US&currency=USD&components=buttons&enable-funding=card&disable-funding=venmo,paylater"
@@ -137,7 +137,7 @@
         const diffTime = Math.abs(endDate - startDate);
         return Math.ceil(diffTime / (1000 * 60 * 60 * 24)); // Chuyển đổi từ milliseconds sang days
     }
-
+    var payment_usd;
     function validateDates() {
     let checkin = booking_form.elements['checkin'].value;
     let checkout = booking_form.elements['checkout'].value;
@@ -174,10 +174,12 @@
             // Tính số ngày
             let count_days = date_diff(checkinDate, checkoutDate);
             let price = parseFloat(document.getElementById('price').textContent); // Lấy giá phòng từ phần tử HTML
-            let payment = price * count_days;
+            let payment_vnd = price * count_days;
+            let usd = 23000;
+            var payment_usd = payment_vnd / usd;
 
             // Hiển thị thông tin thanh toán
-            pay_info.innerHTML = "Total days: " + count_days + "<br>Total payment:" + payment.toFixed(2)+ "VNĐ";
+            pay_info.innerHTML = "Total days: " + count_days + "<br>Total payment: " + payment_vnd.toFixed(2) + "VND = " +payment_usd.toFixed(2) + "$";
             
             // Bật nút thanh toán
             booking_form.elements['pay_now'].removeAttribute('disabled');
