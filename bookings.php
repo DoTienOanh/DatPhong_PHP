@@ -79,11 +79,6 @@ if ($result->num_rows > 0) {
 bookings;
 
 
-        // Hiển thị nút "Refund in Process" nếu trạng thái là "cancelled"
-        if ($status_text == "cancelled") {
-            echo "<button class='btn btn-outline-primary btn-sm mt-2'>Refund in Process</button>";
-        }
-
         echo "</div></div>";
     }
 } else {
