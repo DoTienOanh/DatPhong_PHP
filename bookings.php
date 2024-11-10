@@ -30,7 +30,7 @@ include("connect.inp");
 
 
 // Truy vấn để lấy thông tin từ bảng booking_order và rooms
-$query = "SELECT bo.*, r.room_name, r.price
+$query = "SELECT bo.*, r.room_name, r.price, r.image_url
           FROM booking_order AS bo 
           INNER JOIN rooms AS r ON bo.room_id = r.room_id
           WHERE bo.booking_status IN ('Confirmed', 'Pending', 'Cancelled')
@@ -61,8 +61,10 @@ if ($result->num_rows > 0) {
         echo <<<bookings
         <div class='col-md-4 px-4 mb-4'>
             <div class='bg-white p-3 rounded shadow-sm'>
+                <!-- Hiển thị hình ảnh phòng -->
+                <img src="images/{$data['image_url']}" alt="Room Image" class="img-fluid rounded mb-3" style="width: 100%; height: 111px; object-fit: cover;">             
                 <h5 class='fw-bold'>{$data['room_name']}</h5>
-                <p>{$data['price']}VND/Đêm</p>
+                <p>{$data['price']} VND/Đêm</p>
                 <p>
                     <b>Check in:</b> $checkin <br>
                     <b>Check out:</b> $checkout
@@ -77,6 +79,16 @@ if ($result->num_rows > 0) {
                 </p>
                 
 bookings;
+//HỦY ĐẶT PHÒNG
+    if ($status_text == "booked") {
+    echo <<<cancel
+    <form action="cancel_booking.php" method="POST">
+        <input type="hidden" name="booking_id" value="{$data['booking_id']}">
+        <button type="submit" class="btn btn-sm btn-dark text-white mt-2" style="padding: 2px 12px; font-size: 11px; ">Cancel</button>
+
+    </form>
+    cancel;
+    }
 
 
         echo "</div></div>";
