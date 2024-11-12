@@ -7,61 +7,87 @@
     <title>CONFIRM BOOKING</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
-<style>
-    .btn-pay-now {
-  width: 100%;            
-  background-color: #2ec1ac; 
-  color: #ffffff;         
-  padding: 10px;          
-  font-size: 16px;        
-  font-weight: bold;      
-  border: none;           
-  cursor: pointer;        
-  border-radius: 5px;     
-}
-.btn-pay-now:hover {
-  background-color: #279e8c; 
-}
-</style>
 </head>
 <body class="bg-light">
     <?php require('inc/header.php');?>
     <?php require('connect.inp');?>
+    <?php
+      // Định nghĩa hàm filteration
+      
+      function filteration($data) {
+        // Kiểm tra xem $data có phải là một mảng không
+        if (is_array($data)) {
+            foreach ($data as $key => $value) {
+                $data[$key] = htmlspecialchars(strip_tags(trim($value)));
+            }
+        } else {
+            // Nếu $data không phải là mảng, xử lý như chuỗi
+            $data = htmlspecialchars(strip_tags(trim($data)));
+        }
+        return $data;
+    }
+    
+    function redirect($url) {
+        header("Location: $url");
+        exit();
+    }
+    if(!isset($_GET['id'])){
+        redirect('rooms.php'); 
+    }
+    
+    
+    // Sử dụng Prepared Statement để tránh lỗi và SQL Injection
+?>
+    
 
     <?php
-        // if(!isset($_GET['uId'])){
-        //     redirect('rooms.php');
-        // }
-
-        // $data = filteration($_GET);
-
-        // $room_res = select("SELECT * from 'rooms' Where 'room_id'=? AND 'status' =?",[$data['uId'],1,0],'iii');
-        // if(mysqli_num_rows($room_res)==0){
-        //     redirect('rooms.php');
-        // }
-        // $room_data = mysqli_fetch_assoc($room_res);
-        //if(!isset($_GET['uId'])){
-          //  header('Location: index.php');
-            //exit;
-        //}
+      // Kiểm tra xem room_id có tồn tại trong URL không
+      if (!isset($_GET['id'])) {
+          header('Location: rooms.php'); // Chuyển hướng về trang rooms.php nếu không có room_id
+          exit;
+      }
+      
+      // Lấy room_id từ URL và lọc dữ liệu
+      $room_id = filteration($_GET['id']);
+      
+      // Kết nối đến cơ sở dữ liệu
+      include("connect.inp");
+      
+      // Sử dụng Prepared Statements để tránh SQL Injection
+      $stmt = $con->prepare("SELECT * FROM rooms WHERE room_id = ?");
+      $stmt->bind_param("i", $room_id); // "i" cho biết rằng room_id là một số nguyên
+      $stmt->execute();
+      $room_res = $stmt->get_result();
+      
+      // Kiểm tra xem có phòng nào không
+      if ($room_res->num_rows == 0) {
+          header('Location: rooms.php'); // Chuyển hướng về trang rooms.php nếu không tìm thấy phòng
+          exit;
+      }
+      
+      // Lấy dữ liệu phòng
+      $room_data = $room_res->fetch_assoc();
+      $room_price = $room_data['price'];
+      
+    
     //tính từ code này nhé
-        // Lấy thông tin phòng từ cơ sở dữ liệu
-       // $uId = $_GET['uId'];
-        $sql = "SELECT room_name, price FROM rooms WHERE room_id =  1 AND availability = 1";
-       // $stmt = $conn->prepare($sql);
-        //$stmt->bind_param("i", $uId);
+         //Lấy thông tin phòng từ cơ sở dữ liệu
+      // $id = $_GET[$room_data'room_id'];
+       // $sql = "SELECT room_name, price FROM rooms WHERE room_id =  ? AND availability = ?s";
+       //$stmt = $conn->prepare($sql);
+       // $stmt->bind_param("i", $id);
         //$stmt->execute();
-        //$result = $stmt->get_result();
-        $result=$con->query($sql);
+       // $result = $stmt->get_result();
+        //$result=$con->query($sql);
+//
+       // if($result->num_rows == 0){
+       //     header('Location: index.php');
+       //     exit;
+       // }
 
-        if($result->num_rows == 0){
-            header('Location: index.php');
-            exit;
-        }
-
-        $room_data = $result->fetch_assoc();
-        $room_price = $room_data['price']; // Store room price for JavaScript
-    ?>
+       // $room_data = $result->fetch_assoc();
+       // $room_price = $room_data['price']; // Store room price for JavaScript
+    //?>
     
     <div class="container">
      <div class="row">
@@ -116,7 +142,7 @@
                             <div class="col-12">
                             <h6 class="mb-3 text-danger" id="pay_info">Provide check-in & check-out date!</h6>
                             <!--<button name="pay_now" class="btn-pay-now " disabled>Pay Now</button>-->
-                                <div class="pay_now" id="pay_now">
+                                <div class="pay_now" id="pay_now" >
                                     <!-- Initialize the JS-SDK -->
                                 <script
                                     src="https://www.paypal.com/sdk/js?client-id=AcRFoe-qt7M7cdr5naUgz1mUGNZkjehzrqzTLh0tYsK-syVpAVkI3lLRkhHC-xhtU0ZpgXMdC68J0m6A&buyer-country=US&currency=USD&components=buttons&enable-funding=card&disable-funding=venmo,paylater"
