@@ -8,7 +8,8 @@
     require('inc/links.php');
     ?>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"/>
-   
+   <!-- SweetAlert2 CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
     <style>
       .availability-form{
         margin-top:-50px;
@@ -31,46 +32,67 @@
 require('inc/header.php');
 ?>
 
-<!-- <div class="container-fluid px-lg-4 mt-4">
-  <div class="swiper swiper-container">
-    <div class="swiper-wrapper">
-      <div class="swiper-slide">
-        <img src="images/nature-1.jpg" class="w-100 d-block">
-      </div>
-      <div class="swiper-slide">
-        <img src="images/nature-2.jpg"class="w-100 d-block">
-      </div>
-      <div class="swiper-slide">
-        <img src="images/nature-3.jpg" class="w-100 d-block">
-      </div>
-      <div class="swiper-slide">
-        <img src="images/nature-4.jpg"class="w-100 d-block">
-      </div>
-    </div>
-  </div>  
-</div> -->
+<?php
+// Bắt đầu phiên làm việc
+session_start();
 
-<!-- <div class="modal fade" id="loginModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h1 class="modal-title fs-5" id="staticBackdropLabel">Modal title</h1>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body">
-        ...
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-primary">Understood</button>
-      </div>
-    </div>
-  </div>
-</div> -->
+// Kết nối cơ sở dữ liệu
+include("connect.inp");
+
+// Xử lý khi người dùng gửi form
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    // Lấy dữ liệu từ form
+    $check_in = $_POST['check_in'];
+    $check_out = $_POST['check_out'];
+    $room_id = $_POST['room_id']; // Lấy ID phòng từ form
+
+     // Chuyển đổi định dạng từ 'dd/mm/yyyy' sang 'yyyy/mm/dd'
+     $check_in_date = DateTime::createFromFormat('d/m/Y', $check_in);
+     $check_out_date = DateTime::createFromFormat('d/m/Y', $check_out);
+
+    // Kiểm tra xem phòng có còn trống không
+    $query = "SELECT * FROM booking_order 
+              WHERE room_id = '$room_id' 
+              AND (
+                  (check_in <= '$check_out_date' AND check_out >= '$check_in_date') 
+                  AND booking_status != 'Cancelled'
+              )";
+
+    $result = mysqli_query($con, $query);
+
+      if (mysqli_num_rows($result) > 0) {
+        // Phòng không còn trống
+        echo "<script>
+                document.getElementById('alertModalBody').innerText = 'Phòng đã được đặt trong khoảng thời gian này. Vui lòng chọn thời gian khác.';
+                var myModal = new bootstrap.Modal(document.getElementById('alertModal'));
+                myModal.show();
+              </script>";
+    } else {
+        // Thực hiện đặt phòng
+        $insert_query = "INSERT INTO booking_order (room_id, check_in, check_out, booking_status) 
+                        VALUES ('$room_id', '$check_in_date', '$check_out_date', 'Pending')";
+        if (mysqli_query($con, $insert_query)) {
+            echo "<script>
+                    document.getElementById('alertModalBody').innerText = 'Đặt phòng thành công!';
+                    var myModal = new bootstrap.Modal(document.getElementById('alertModal'));
+                    myModal.show();
+                  </script>";
+        } else {
+            echo "<script>
+                    document.getElementById('alertModalBody').innerText = 'Không thể đặt phòng: " . mysqli_error($con) . "';
+                    var myModal = new bootstrap.Modal(document.getElementById('alertModal'));
+                    myModal.show();
+                  </script>";
+        }
+    }
+}
+
+?>
+
 
 
 <!-- check availability form -->
-<div class="container">
+<!-- <div class="container">
   <div class="row">
     <div class="col-lg-12 bg-white shadow p-4 rounded">
      <h5 class="mb-4"></h5> 
@@ -89,9 +111,9 @@ require('inc/header.php');
           
             <select class="form-select shadow-none">
              
-              <option value="1">One</option>
-              <option value="2">Two</option>
-              <option value="3">Three</option>
+              <option value="1">1</option>
+              <option value="2">2</option>
+              <option value="3">3</option>
             </select>
           
         </div>
@@ -100,9 +122,9 @@ require('inc/header.php');
             
             <select class="form-select shadow-none">
              
-              <option value="1">One</option>
-              <option value="2">Two</option>
-              <option value="3">Three</option>
+              <option value="1">1</option>
+              <option value="2">2</option>
+              <option value="3">3</option>
             </select>
             
         </div>
@@ -114,7 +136,59 @@ require('inc/header.php');
      </form>
     </div>
   </div>
+</div> -->
+<div class="container">
+  <div class="row">
+    <div class="col-lg-12 bg-white shadow p-4 rounded">
+     <h5 class="mb-4"></h5> 
+     <form method="POST">
+      <div class="row align-items-end">
+        <div class="col-lg-3 mb-3">
+          <label class="form-label" style="font-weight:500;">Check-in</label>
+          <input type="date" name="check_in" class="form-control shadow-none" required>
+        </div>
+        <div class="col-lg-3 mb-3">
+          <label class="form-label" style="font-weight:500;">Check-out</label>
+          <input type="date" name="check_out" class="form-control shadow-none" required>
+        </div>
+        <div class="col-lg-3 mb-3">
+          <label class="form-label" style="font-weight:500;">Room</label>
+          <select name="room_id" class="form-select shadow-none" required>
+            <option value="">Chọn phòng</option>
+            <?php
+            // Lấy danh sách các phòng có sẵn
+            $room_res = mysqli_query($con, "SELECT * FROM rooms WHERE status = 'Available'");
+            while ($room_data = mysqli_fetch_assoc($room_res)) {
+                echo "<option value='{$room_data['room_id']}'>{$room_data['room_name']}</option>";
+            }
+            ?>
+          </select>
+        </div>
+        <!-- <div class="col-lg-3 mb-3">
+          <label class="form-label" style="font-weight:500;">Adult</label>
+          <select class="form-select shadow-none" required>
+              <option value="1">One</option>
+              <option value="2">Two</option>
+              <option value="3">Three</option>
+          </select>
+        </div>
+        <div class="col-lg-2 mb-3">
+          <label class="form-label" style="font-weight:500;">Children</label>
+          <select class="form-select shadow-none" required>
+              <option value="1">One</option>
+              <option value="2">Two</option>
+              <option value="3">Three</option>
+          </select>
+        </div> -->
+        <div class="col-lg-1 mb-lg-3 mt-2">
+          <button type="submit" class="btn text-white shadow-none custom-bg">Submit</button>
+        </div>
+      </div>
+     </form>
+    </div>
+  </div>
 </div>
+
 
 
 <!-- Our Rooms -->
@@ -161,8 +235,9 @@ require('inc/header.php');
                   $facilities_data
                 </div>
                 <div class="d-flex justify-content-evenly">
-                  <a href="#" class="btn btn-sm text-white custom-bg shadow-none">Đặt ngay</a>
-                  <a href="#" class="btn btn-sm btn-outline-dark shadow-none">Chi tiết</a>
+                  <a href="confirm_booking" class="btn btn-sm text-white custom-bg shadow-none">Đặt ngay</a>
+                  <a href="room_details.php?id=$room_data[room_id]" class="btn btn-sm btn-outline-dark shadow-none">Chi tiết</a>
+                 
                 </div>
 
               
@@ -190,22 +265,34 @@ require('inc/header.php');
  require('inc/footer.php');
  ?>
 
+<!-- Modal -->
+<div class="modal fade" id="alertModal" tabindex="-1" aria-labelledby="alertModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="alertModalLabel">Thông báo</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body" id="alertModalBody">
+        <!-- Nội dung thông báo sẽ được thêm vào đây -->
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
 <script
 src="https://www.paypal.com/sdk/js?client-id=AcRFoe-qt7M7cdr5naUgz1mUGNZkjehzrqzTLh0tYsK-syVpAVkI3lLRkhHC-xhtU0ZpgXMdC68J0m6A&buyer-country=US&currency=USD&components=buttons&enable-funding=card&disable-funding=venmo,paylater"
 data-sdk-integration-source="developer-studio"
 ></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
-<!-- <script>
-  var swiper = new Swiper(".swiper-container", {
-    spaceBetween: 30,
-    effect: "fade",
-    loop:true,
-    autoplay:{
-      delay:3500,
-      disableOnInteraction: false,
-    }
-  }); -->
-</script>
+<!-- SweetAlert2 JS -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+
 </body>
 </html>
