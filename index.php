@@ -137,12 +137,21 @@ while ($room_data = mysqli_fetch_assoc($room_res)) {
                 <h5>$room_data[room_name]</h5>
                 <h6 class="mb-4">$room_data[price] VND</h6>
                 <div class="features mb-4">
-                    <h6 class="mb-1">Description</h6>
+                    <h6 class="mb-1">Mô tả</h6>
                     $room_data[description]
                 </div>
                 <div class="facilities mb-4">
-                    <h6 class="mb-1">Facilities</h6>
+                    <h6 class="mb-1">Cơ sở vật chất</h6>
                     $facilities_data
+                </div>
+                <div class="guests mb-4">
+                  <h6 class="mb-1">Dành cho</h6>
+                    <span class="badge rounded-pill bg-light text-dark text-wrap">
+                      $room_data[max_adults] Người lớn
+                      </span>
+                      <span class="badge rounded-pill bg-light text-dark text-wrap">
+                      $room_data[max_children] Trẻ em
+                      </span>
                 </div>
                 <div class="d-flex justify-content-evenly">
                     <a href="confirm_booking.php?id=$room_data[room_id]" class="btn btn-sm text-white custom-bg shadow-none">Book Now</a>
