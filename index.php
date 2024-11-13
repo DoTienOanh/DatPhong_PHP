@@ -39,7 +39,7 @@ require('inc/header.php');
   <div class="row">
     <div class="col-lg-12 bg-white shadow p-4 rounded">
      <h5 class="mb-4"></h5> 
-     <form method="GET" action="" id = "check" onsubmit="return validateDates();">
+     <form method="GET" action="">
     <div class="row align-items-end">
         <div class="col-lg-3 mb-3">
             <label class="form-label" id ="check" style="font-weight:500;">Check-in</label>
