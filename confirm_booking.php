@@ -102,7 +102,7 @@
 
                             <div class="col-12">
                                 <h6 class="mb-3 text-danger" id="pay_info">Vui lòng nhập ngày checkin và checkout!</h6>
-                                <div class="pay_now d-none" id="pay_now">
+                                <div class="pay_now" id="pay_now">
                                     <script src="https://www.paypal.com/sdk/js?client-id=AcRFoe-qt7M7cdr5naUgz1mUGNZkjehzrqzTLh0tYsK-syVpAVkI3lLRkhHC-xhtU0ZpgXMdC68J0m6A&buyer-country=US&currency=USD&components=buttons&enable-funding=card&disable-funding=venmo,paylater"
                                         data-sdk-integration-source="developer-studio"></script>
                                     <script src="app.js"></script>
@@ -136,31 +136,50 @@ $stmt->close();
 </script>
 
 <script>
+// Lấy giá phòng từ PHP
+const roomPrice = <?php echo json_encode($room_data['price']); ?>;
+
+// Hàm tính số ngày giữa hai ngày
 function date_diff(startDate, endDate) {
-    const diffTime = Math.abs(endDate - startDate);
-    return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    const diffTime = Math.abs(endDate - startDate); // Tính thời gian chênh lệch
+    return Math.ceil(diffTime / (1000 * 60 * 60 * 24)); // Chuyển đổi từ milliseconds sang days
 }
 
+let payment_usd = 0;
+// Hàm xác thực ngày nhận phòng và trả phòng
 function validateDates() {
-    let checkin = booking_form.elements['checkin'].value;
-    let checkout = booking_form.elements['checkout'].value;
-    let checkinDate = new Date(checkin);
-    let checkoutDate = new Date(checkout);
-    let today = new Date();
-    today.setHours(0, 0, 0, 0);
+let checkin = booking_form.elements['checkin'].value;
+let checkout = booking_form.elements['checkout'].value;
 
-    if (checkinDate < today) {
-        pay_info.textContent = "Ngày check-in không thể là ngày trong quá khứ!";
-        return false;
-    }
+if (!checkin || !checkout) {
+    pay_info.textContent = "Vui lòng nhập ngày checkin và checkout!"; // Hiển thị thông báo nếu không chọn đủ ngày
+    booking_form.elements['pay_now'].setAttribute('disabled', true); // Vô hiệu hóa nút thanh toán
+    return false; // Kết thúc hàm
+}
 
-    if (checkoutDate <= checkinDate) {
-        pay_info.textContent = "Ngày check-out không thể nhỏ hơn ngày check-in!";
-        return false;
-    }
+// Chuyển đổi ngày thành định dạng Date để dễ so sánh
+let checkinDate = new Date(checkin);
+let checkoutDate = new Date(checkout);
+let today = new Date();
 
+// Đặt thời gian của ngày hiện tại về 0 giờ để so sánh dễ hơn
+today.setHours(0, 0, 0, 0);
 
-    for (let booking of bookedDates) {
+// Kiểm tra nếu ngày check-in là quá khứ
+if (checkinDate < today) {
+    pay_info.textContent = "Ngày check-in không thể là ngày trong quá khứ!";
+    booking_form.elements['pay_now'].setAttribute('disabled', true);
+    return false;
+}
+
+// Kiểm tra nếu ngày check-out trước ngày check-in
+if (checkoutDate <= checkinDate) {
+    pay_info.textContent = "Ngày check-out không thể nhỏ hơn ngày check-in!";
+    booking_form.elements['pay_now'].setAttribute('disabled', true);
+    return false;
+}
+
+for (let booking of bookedDates) {
         let bookedCheckin = new Date(booking.checkin);
         let bookedCheckout = new Date(booking.checkout);
 
@@ -170,31 +189,28 @@ function validateDates() {
         }
     }
 
-    let count_days = date_diff(checkinDate, checkoutDate);
-    let price = parseFloat(document.getElementById('price').textContent);
-    let payment_vnd = price * count_days;
-    let usd = 23000;
-    let payment_usd = payment_vnd / usd;
+// Nếu cả hai ngày hợp lệ, tính số ngày và tổng tiền
+let count_days = date_diff(checkinDate, checkoutDate);
+let price = parseFloat(document.getElementById('price').textContent); // Lấy giá phòng từ phần tử HTML
+let payment_vnd = roomPrice * count_days;
+const usd = 23000;
+// Cập nhật giá trị payment_usd
+payment_usd = (payment_vnd / usd).toFixed(2);;
 
-    pay_info.innerHTML = "Total days: " + count_days + "<br>Total payment: " + payment_vnd.toFixed(2) + " VND = " + payment_usd.toFixed(2) + "$";
+// Hiển thị thông tin thanh toán
+pay_info.innerHTML = "Total days: " + count_days + "<br>Total payment: " + payment_vnd.toFixed(2) + "VND = " +payment_usd + "$";
 
-    return true;
+document.getElementById('pay_now').setAttribute('data-payment-usd', payment_usd);
+        
+// Bật nút thanh toán
+booking_form.elements['pay_now'].removeAttribute('disabled');
+
+return true;
 }
 
-function validateForm() {
-    let requiredFields = ['name', 'phonenum', 'address', 'checkin', 'checkout'];
-    let allFilled = requiredFields.every(field => booking_form.elements[field].value.trim() !== '');
-
-    if (allFilled && validateDates()) {
-        document.getElementById('pay_now').classList.remove('d-none');
-    } else {
-        document.getElementById('pay_now').classList.add('d-none');
-    }
-}
-
-document.querySelectorAll('#booking_form input').forEach(input => {
-    input.addEventListener('input', validateForm);
-});
+// Gắn sự kiện onchange vào các input ngày
+booking_form.elements['checkin'].addEventListener('change', validateDates);
+booking_form.elements['checkout'].addEventListener('change', validateDates);
 </script>
 
 <?php require('inc/footer.php'); ?>
