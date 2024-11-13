@@ -34,7 +34,9 @@ $query = "SELECT bo.*, r.room_name, r.price, r.image_url
           FROM booking_order AS bo 
           INNER JOIN rooms AS r ON bo.room_id = r.room_id
           WHERE bo.booking_status IN ('Confirmed', 'Pending', 'Cancelled')
+          AND r.status = 'available'
           ORDER BY bo.booking_id DESC";
+
 
 $result = $con->query($query);
 
