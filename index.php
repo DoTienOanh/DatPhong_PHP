@@ -39,7 +39,7 @@ require('inc/header.php');
   <div class="row">
     <div class="col-lg-12 bg-white shadow p-4 rounded">
      <h5 class="mb-4"></h5> 
-     <form method="GET" action="">
+     <form method="GET" action="" id="check" onsubmit="return validateDates();" >
     <div class="row align-items-end">
         <div class="col-lg-3 mb-3">
             <label class="form-label" id ="check" style="font-weight:500;">Check-in</label>
@@ -185,36 +185,7 @@ while ($room_data = mysqli_fetch_assoc($room_res)) {
  require('inc/footer.php');
  ?>
 
-<script>
-function date_diff(startDate, endDate) {
-    const diffTime = Math.abs(endDate - startDate);
-    return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-}
 
-function validateDates() {
-    let checkin = check.elements['checkin_date'].value;
-    let checkout = check.elements['checkout_date'].value;
-    let checkinDate = new Date(checkin);
-    let checkoutDate = new Date(checkout);
-    let today = new Date();
-    today.setHours(0, 0, 0, 0);
-
-    if (checkinDate < today) {
-        pay_info.textContent = "Ngày check-in không thể là ngày trong quá khứ!";
-        return false;
-    }
-
-    if (checkoutDate <= checkinDate) {
-        pay_info.textContent = "Ngày check-out không thể nhỏ hơn ngày check-in!";
-        return false;
-    }
-
-    
-
-  document.querySelectorAll('#check input').forEach(input => {
-    input.addEventListener('input', validateForm);
-});
-</script>
 
 // kiểm tra ngày nhập vào
 
