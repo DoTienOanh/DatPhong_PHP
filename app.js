@@ -1,4 +1,3 @@
-const payNowButton = document.getElementById('pay_now');
 paypal.Buttons({
     createOrder: function(data, actions) {
         return actions.order.create({

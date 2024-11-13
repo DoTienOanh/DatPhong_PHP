@@ -157,72 +157,74 @@
          </div>
         </div>
     </div>
-<script>
+
+    <script>
+    // Lấy giá phòng từ PHP
+    const roomPrice = <?php echo json_encode($room_data['price']); ?>;
+
+    // Hàm tính số ngày giữa hai ngày
     function date_diff(startDate, endDate) {
-        // Tính số ngày giữa hai ngày
-        const diffTime = Math.abs(endDate - startDate);
+        const diffTime = Math.abs(endDate - startDate); // Tính thời gian chênh lệch
         return Math.ceil(diffTime / (1000 * 60 * 60 * 24)); // Chuyển đổi từ milliseconds sang days
-    }
-    var payment_usd;
+        }
+
+    let payment_usd = 0;
+    // Hàm xác thực ngày nhận phòng và trả phòng
     function validateDates() {
     let checkin = booking_form.elements['checkin'].value;
     let checkout = booking_form.elements['checkout'].value;
-    
+                                            
+    if (!checkin || !checkout) {
+    pay_info.textContent = "Provide check-in & check-out date!"; // Hiển thị thông báo nếu không chọn đủ ngày
+    booking_form.elements['pay_now'].setAttribute('disabled', true); // Vô hiệu hóa nút thanh toán
+    return false; // Kết thúc hàm
+    }
+
     // Chuyển đổi ngày thành định dạng Date để dễ so sánh
     let checkinDate = new Date(checkin);
     let checkoutDate = new Date(checkout);
     let today = new Date();
-    
+                                            
     // Đặt thời gian của ngày hiện tại về 0 giờ để so sánh dễ hơn
     today.setHours(0, 0, 0, 0);
 
     // Kiểm tra nếu ngày check-in là quá khứ
     if (checkinDate < today) {
-        pay_info.textContent = "Check-in date cannot be in the past!";
-        booking_form.elements['pay_now'].setAttribute('disabled', true);
-        return false;
+    pay_info.textContent = "Check-in date cannot be in the past!";
+    booking_form.elements['pay_now'].setAttribute('disabled', true);
+    return false;
     }
-    
+                                            
     // Kiểm tra nếu ngày check-out trước ngày check-in
     if (checkoutDate <= checkinDate) {
-        pay_info.textContent = "Check-out date must be after check-in date!";
-        booking_form.elements['pay_now'].setAttribute('disabled', true);
-        return false;
+    pay_info.textContent = "Check-out date must be after check-in date!";
+    booking_form.elements['pay_now'].setAttribute('disabled', true);
+    return false;
     }
-    
-    // Nếu ngày hợp lệ, bật nút và ẩn thông báo lỗi
-    //pay_info.textContent = "";
-    //booking_form.elements['pay_now'].removeAttribute('disabled');
-    //return true;
 
-    // Tính số ngày
-    if (checkin && checkout) {
-            // Tính số ngày
-            let count_days = date_diff(checkinDate, checkoutDate);
-            let price = parseFloat(document.getElementById('price').textContent); // Lấy giá phòng từ phần tử HTML
-            let payment_vnd = price * count_days;
-            let usd = 23000;
-            var payment_usd = payment_vnd / usd;
+    // Nếu cả hai ngày hợp lệ, tính số ngày và tổng tiền
+    let count_days = date_diff(checkinDate, checkoutDate);
+    let price = parseFloat(document.getElementById('price').textContent); // Lấy giá phòng từ phần tử HTML
+    let payment_vnd = roomPrice * count_days;
+    const usd = 23000;
+    // Cập nhật giá trị payment_usd
+    payment_usd = (payment_vnd / usd).toFixed(2);;
+                                            
+    // Hiển thị thông tin thanh toán
+    pay_info.innerHTML = "Total days: " + count_days + "<br>Total payment: " + payment_vnd.toFixed(2) + "VND = " +payment_usd + "$";
 
-            // Hiển thị thông tin thanh toán
-            pay_info.innerHTML = "Total days: " + count_days + "<br>Total payment: " + payment_vnd.toFixed(2) + "VND = " +payment_usd.toFixed(2) + "$";
-            
-            // Bật nút thanh toán
-            booking_form.elements['pay_now'].removeAttribute('disabled');
-        } else {
-            // Nếu chưa chọn đủ ngày, ẩn thông tin thanh toán
-            pay_info.textContent = "Provide check-in & check-out date!";
-            booking_form.elements['pay_now'].setAttribute('disabled', true);
-        }
+    document.getElementById('pay_now').setAttribute('data-payment-usd', payment_usd);
+                                                    
+    // Bật nút thanh toán
+    booking_form.elements['pay_now'].removeAttribute('disabled');
 
-        return true;
-}
+    return true;
+    }
 
-// Gắn sự kiện onchange vào các input ngày
-booking_form.elements['checkin'].addEventListener('change', validateDates);
-booking_form.elements['checkout'].addEventListener('change', validateDates);
-</script>
-
+    // Gắn sự kiện onchange vào các input ngày
+    booking_form.elements['checkin'].addEventListener('change', validateDates);
+    booking_form.elements['checkout'].addEventListener('change', validateDates);
+    </script>
     
     <?php require('inc/footer.php'); ?>
     <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
