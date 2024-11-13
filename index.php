@@ -55,6 +55,8 @@ require('inc/header.php');
                 <option value="1">1</option>
                 <option value="2">2</option>
                 <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
             </select>
         </div>
         <div class="col-lg-2 mb-3">
@@ -63,11 +65,13 @@ require('inc/header.php');
                 <option value="0">0</option>
                 <option value="1">1</option>
                 <option value="2">2</option>
+                <option value="3">3</option>
             </select>
         </div>
         <div class="col-lg-1 mb-lg-3 mt-2">
             <button type="submit" class="btn text-white shadow-none custom-bg">Submit</button>
         </div>
+        <h6 class="mb-3 text-danger" id="pay_info"></h6>
     </div>
 </form>
     </div>
@@ -90,6 +94,7 @@ $checkin_date = isset($_GET['checkin_date']) ? $_GET['checkin_date'] : '';
 $checkout_date = isset($_GET['checkout_date']) ? $_GET['checkout_date'] : '';
 $adult_count = isset($_GET['adult_count']) ? $_GET['adult_count'] : 1;
 $children_count = isset($_GET['children_count']) ? $_GET['children_count'] : 0;
+
 
 // Build the SQL query with filters
 $sql = "SELECT * FROM `rooms` WHERE status = 'available'";

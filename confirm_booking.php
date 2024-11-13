@@ -58,7 +58,7 @@
         <div class="col-lg-7 col-md-12 px-4">
             <div id="roomCarousel" class="carousel slide" data-bs-ride="carousel">
                 <div class="carousel-inner">
-                <img src="img/$room_thumb" class="img-fluid rounded">
+                <img src="images/<?php echo $room_thumb ?>" class="img-fluid rounded">
                 </div>    
             </div>
             <h5><?php echo $room_data['room_name']; ?></h5>
