@@ -85,7 +85,7 @@ require('inc/header.php');
   <?php
 include("connect.inp");
 
-// Retrieve filter values from URL (GET) and set default conditions
+// Truy xuất các giá trị bộ lọc từ URL (GET) và đặt điều kiện mặc định
 $checkin_date = isset($_GET['checkin_date']) ? $_GET['checkin_date'] : '';
 $checkout_date = isset($_GET['checkout_date']) ? $_GET['checkout_date'] : '';
 $adult_count = isset($_GET['adult_count']) ? $_GET['adult_count'] : 1;
@@ -110,14 +110,14 @@ if ($children_count) {
     $sql .= " AND max_children >= $children_count";  // Updated column name
 }
 
-// Execute the query and handle errors
+// Truy vấn và xử lí lỗi
 $room_res = mysqli_query($con, $sql);
 
 if (!$room_res) {
     die("Query failed: " . mysqli_error($con));
 }
 
-// Display results
+// Trình bày kết quả
 while ($room_data = mysqli_fetch_assoc($room_res)) {
     $fac_q = mysqli_query($con, "SELECT f.facility_name FROM `facilities` f
                     INNER JOIN room_facilities rfac ON f.facility_id=rfac.facility_id
@@ -128,7 +128,7 @@ while ($room_data = mysqli_fetch_assoc($room_res)) {
     }
     $room_thumb = $room_data['image_url'] ? $room_data['image_url'] : "default.jpg";
 
-    // Display the room
+    // Hiển thị room
     echo <<<data
     <div class="col-lg-4 col-md-6 my-3">
         <div class="card border-0 shadow" style="max-width: 350px; margin: auto;">
