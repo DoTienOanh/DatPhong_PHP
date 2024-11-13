@@ -216,6 +216,8 @@ function validateDates() {
 });
 </script>
 
+// kiểm tra ngày nhập vào
+
 <script>
 function date_diff(startDate, endDate) {
     const diffTime = Math.abs(endDate - startDate);
