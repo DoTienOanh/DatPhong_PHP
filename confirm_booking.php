@@ -47,6 +47,7 @@
 
     $room_data = $room_res->fetch_assoc();
     $room_price = $room_data['price'];
+    $room_thumb = $room_data['image_url'] ? $room_data['image_url'] : "default.jpg";
     ?>
 
     <div class="container">
@@ -57,7 +58,7 @@
         <div class="col-lg-7 col-md-12 px-4">
             <div id="roomCarousel" class="carousel slide" data-bs-ride="carousel">
                 <div class="carousel-inner">
-                    <img src="images/<?php echo $room_data['image_url']; ?>" class="card-img-top">
+                <img src="img/$room_thumb" class="img-fluid rounded">
                 </div>    
             </div>
             <h5><?php echo $room_data['room_name']; ?></h5>
@@ -84,6 +85,11 @@
                                 <input name="address" type="text" class="form-control shadow-none" required>
                             </div>
 
+                            <div class="col-md-12 mb-3">
+                                <label class="form-label">Email</label>
+                                <input name="email" type="text" class="form-control shadow-none" required>
+                            </div>
+
                             <div class="col-md-6 mb-3">
                                 <label class="form-label">Check-in</label>
                                 <input name="checkin" type="date" class="form-control shadow-none" required>
@@ -102,11 +108,11 @@
 
                             <div class="col-12">
                                 <h6 class="mb-3 text-danger" id="pay_info">Vui lòng nhập ngày checkin và checkout!</h6>
-                                <div class="pay_now" id="pay_now">
+                                <div class="pay_now d-none" id="pay_now">
                                     <script src="https://www.paypal.com/sdk/js?client-id=AcRFoe-qt7M7cdr5naUgz1mUGNZkjehzrqzTLh0tYsK-syVpAVkI3lLRkhHC-xhtU0ZpgXMdC68J0m6A&buyer-country=US&currency=USD&components=buttons&enable-funding=card&disable-funding=venmo,paylater"
                                         data-sdk-integration-source="developer-studio"></script>
                                     <script src="app.js"></script>
-                                </div>
+                                </div>  
                             </div>
                         </div> 
                     </form>
@@ -117,69 +123,50 @@
 
 
     <?php
-// Kết nối cơ sở dữ liệu và kiểm tra phòng
-$room_id = filteration($_GET['id']);
-include("connect.inp");
-$booked_dates = [];
-$stmt = $con->prepare("SELECT check_in, check_out FROM booking_order WHERE room_id = ?");
-$stmt->bind_param("i", $room_id);
-$stmt->execute();
-$result = $stmt->get_result();
+    // Kết nối cơ sở dữ liệu và kiểm tra phòng
+    $room_id = filteration($_GET['id']);
+    include("connect.inp");
+    $booked_dates = [];
+    $stmt = $con->prepare("SELECT check_in, check_out FROM booking_order WHERE room_id = ?");
+    $stmt->bind_param("i", $room_id);
+    $stmt->execute();
+    $result = $stmt->get_result();
 
-while ($row = $result->fetch_assoc()) {
-    $booked_dates[] = ['checkin' => $row['check_in'], 'checkout' => $row['check_out']];
-}
-$stmt->close();
-?>
+    while ($row = $result->fetch_assoc()) {
+        $booked_dates[] = ['checkin' => $row['check_in'], 'checkout' => $row['check_out']];
+    }
+    $stmt->close();
+    ?>
+    <script>
+         const bookedDates = <?php echo json_encode($booked_dates); ?>;
+    </script>
+
 <script>
-    const bookedDates = <?php echo json_encode($booked_dates); ?>;
-</script>
-
-<script>
-// Lấy giá phòng từ PHP
-const roomPrice = <?php echo json_encode($room_data['price']); ?>;
-
-// Hàm tính số ngày giữa hai ngày
 function date_diff(startDate, endDate) {
-    const diffTime = Math.abs(endDate - startDate); // Tính thời gian chênh lệch
-    return Math.ceil(diffTime / (1000 * 60 * 60 * 24)); // Chuyển đổi từ milliseconds sang days
+    const diffTime = Math.abs(endDate - startDate);
+    return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
 }
 
-let payment_usd = 0;
-// Hàm xác thực ngày nhận phòng và trả phòng
 function validateDates() {
-let checkin = booking_form.elements['checkin'].value;
-let checkout = booking_form.elements['checkout'].value;
+    let checkin = booking_form.elements['checkin'].value;
+    let checkout = booking_form.elements['checkout'].value;
+    let checkinDate = new Date(checkin);
+    let checkoutDate = new Date(checkout);
+    let today = new Date();
+    today.setHours(0, 0, 0, 0);
 
-if (!checkin || !checkout) {
-    pay_info.textContent = "Vui lòng nhập ngày checkin và checkout!"; // Hiển thị thông báo nếu không chọn đủ ngày
-    booking_form.elements['pay_now'].setAttribute('disabled', true); // Vô hiệu hóa nút thanh toán
-    return false; // Kết thúc hàm
-}
+    if (checkinDate < today) {
+        pay_info.textContent = "Ngày check-in không thể là ngày trong quá khứ!";
+        return false;
+    }
 
-// Chuyển đổi ngày thành định dạng Date để dễ so sánh
-let checkinDate = new Date(checkin);
-let checkoutDate = new Date(checkout);
-let today = new Date();
+    if (checkoutDate <= checkinDate) {
+        pay_info.textContent = "Ngày check-out không thể nhỏ hơn ngày check-in!";
+        return false;
+    }
 
-// Đặt thời gian của ngày hiện tại về 0 giờ để so sánh dễ hơn
-today.setHours(0, 0, 0, 0);
 
-// Kiểm tra nếu ngày check-in là quá khứ
-if (checkinDate < today) {
-    pay_info.textContent = "Ngày check-in không thể là ngày trong quá khứ!";
-    booking_form.elements['pay_now'].setAttribute('disabled', true);
-    return false;
-}
-
-// Kiểm tra nếu ngày check-out trước ngày check-in
-if (checkoutDate <= checkinDate) {
-    pay_info.textContent = "Ngày check-out không thể nhỏ hơn ngày check-in!";
-    booking_form.elements['pay_now'].setAttribute('disabled', true);
-    return false;
-}
-
-for (let booking of bookedDates) {
+    for (let booking of bookedDates) {
         let bookedCheckin = new Date(booking.checkin);
         let bookedCheckout = new Date(booking.checkout);
 
@@ -189,28 +176,31 @@ for (let booking of bookedDates) {
         }
     }
 
-// Nếu cả hai ngày hợp lệ, tính số ngày và tổng tiền
-let count_days = date_diff(checkinDate, checkoutDate);
-let price = parseFloat(document.getElementById('price').textContent); // Lấy giá phòng từ phần tử HTML
-let payment_vnd = roomPrice * count_days;
-const usd = 23000;
-// Cập nhật giá trị payment_usd
-payment_usd = (payment_vnd / usd).toFixed(2);;
+    let count_days = date_diff(checkinDate, checkoutDate);
+    let price = parseFloat(document.getElementById('price').textContent);
+    let payment_vnd = price * count_days;
+    let usd = 23000;
+    let payment_usd = payment_vnd / usd;
 
-// Hiển thị thông tin thanh toán
-pay_info.innerHTML = "Total days: " + count_days + "<br>Total payment: " + payment_vnd.toFixed(2) + "VND = " +payment_usd + "$";
+    pay_info.innerHTML = "Total days: " + count_days + "<br>Total payment: " + payment_vnd.toFixed(2) + " VND = " + payment_usd.toFixed(2) + "$";
 
-document.getElementById('pay_now').setAttribute('data-payment-usd', payment_usd);
-        
-// Bật nút thanh toán
-booking_form.elements['pay_now'].removeAttribute('disabled');
-
-return true;
+    return true;
 }
 
-// Gắn sự kiện onchange vào các input ngày
-booking_form.elements['checkin'].addEventListener('change', validateDates);
-booking_form.elements['checkout'].addEventListener('change', validateDates);
+function validateForm() {
+    let requiredFields = ['name', 'phonenum', 'address', 'email', 'checkin', 'checkout'];
+    let allFilled = requiredFields.every(field => booking_form.elements[field].value.trim() !== '');
+
+    if (allFilled && validateDates()) {
+        document.getElementById('pay_now').classList.remove('d-none');
+    } else {
+        document.getElementById('pay_now').classList.add('d-none');
+    }
+}
+
+document.querySelectorAll('#booking_form input').forEach(input => {
+    input.addEventListener('input', validateForm);
+});
 </script>
 
 <?php require('inc/footer.php'); ?>
