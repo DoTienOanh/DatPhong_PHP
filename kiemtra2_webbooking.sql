@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Máy chủ: 127.0.0.1
--- Thời gian đã tạo: Th10 26, 2024 lúc 06:07 PM
+-- Thời gian đã tạo: Th10 13, 2024 lúc 10:10 AM
 -- Phiên bản máy phục vụ: 10.4.32-MariaDB
 -- Phiên bản PHP: 8.0.30
 
@@ -188,16 +188,16 @@ CREATE TABLE `rooms` (
 --
 
 INSERT INTO `rooms` (`room_id`, `room_name`, `price`, `room_type`, `max_adults`, `max_children`, `status`, `description`, `image_url`, `availability`) VALUES
-(1, 'Phòng Tiêu Chuẩn', 500000.00, 'Standard', 2, 1, 'Available', 'Phòng tiêu chuẩn với đầy đủ tiện nghi', 'https://example.com/image1.jpg', 1),
-(2, 'Phòng Deluxe', 750000.00, 'Deluxe', 2, 2, 'Available', 'Phòng rộng rãi với ban công', 'https://example.com/image2.jpg', 1),
-(3, 'Phòng Gia Đình', 1000000.00, 'Family', 4, 2, 'Occupied', 'Phòng phù hợp cho gia đình', 'https://example.com/image3.jpg', 0),
-(4, 'Phòng Suite', 1500000.00, 'Suite', 2, 2, 'Maintenance', 'Phòng cao cấp với view đẹp', 'https://example.com/image4.jpg', 0),
-(5, 'Phòng Đôi', 600000.00, 'Double', 2, 1, 'Available', 'Phòng đôi tiện nghi', 'https://example.com/image5.jpg', 1),
-(6, 'Phòng Đơn', 400000.00, 'Single', 1, 0, 'Available', 'Phòng đơn nhỏ gọn', 'https://example.com/image6.jpg', 1),
-(7, 'Phòng Executive', 2000000.00, 'Executive', 2, 1, 'Occupied', 'Phòng sang trọng', 'https://example.com/image7.jpg', 0),
-(8, 'Phòng Family Deluxe', 1200000.00, 'Family Deluxe', 4, 3, 'Available', 'Phòng gia đình cao cấp', 'https://example.com/image8.jpg', 1),
-(9, 'Phòng VIP', 2500000.00, 'VIP', 2, 2, 'Available', 'Phòng VIP với view toàn cảnh', 'https://example.com/image9.jpg', 1),
-(10, 'Phòng Tiết Kiệm', 300000.00, 'Budget', 1, 0, 'Available', 'Phòng tiết kiệm cho khách du lịch', 'https://example.com/image10.jpg', 1);
+(1, 'Phòng Tiêu Chuẩn', 500000.00, 'Standard', 2, 1, 'Available', 'Phòng tiêu chuẩn với đầy đủ tiện nghi', 'image1.jpg', 1),
+(2, 'Phòng Deluxe', 750000.00, 'Deluxe', 2, 2, 'Available', 'Phòng rộng rãi với ban công', 'image2.jpg', 1),
+(3, 'Phòng Gia Đình', 1000000.00, 'Family', 4, 2, 'Occupied', 'Phòng phù hợp cho gia đình', 'image3.jpg', 0),
+(4, 'Phòng Suite', 1500000.00, 'Suite', 2, 2, 'Maintenance', 'Phòng cao cấp với view đẹp', 'image4.jpg', 0),
+(5, 'Phòng Đôi', 600000.00, 'Double', 2, 1, 'Available', 'Phòng đôi tiện nghi', 'image5.jpg', 1),
+(6, 'Phòng Đơn', 400000.00, 'Single', 1, 0, 'Available', 'Phòng đơn nhỏ gọn', 'image6.jpg', 1),
+(7, 'Phòng Executive', 2000000.00, 'Executive', 2, 1, 'Occupied', 'Phòng sang trọng', 'image7.jpg', 0),
+(8, 'Phòng Family Deluxe', 1200000.00, 'Family Deluxe', 4, 3, 'Available', 'Phòng gia đình cao cấp', 'image8.jpg', 1),
+(9, 'Phòng VIP', 2500000.00, 'VIP', 2, 2, 'Available', 'Phòng VIP với view toàn cảnh', 'image9.jpg', 1),
+(10, 'Phòng Tiết Kiệm', 300000.00, 'Budget', 1, 0, 'Available', 'Phòng tiết kiệm cho khách du lịch', 'image10.jpg', 1);
 
 -- --------------------------------------------------------
 
