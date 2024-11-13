@@ -12,21 +12,17 @@
     <?php require('inc/header.php');?>
     <?php require('connect.inp');?>
     <?php
-      // Định nghĩa hàm filteration
-      
       function filteration($data) {
-        // Kiểm tra xem $data có phải là một mảng không
         if (is_array($data)) {
             foreach ($data as $key => $value) {
                 $data[$key] = htmlspecialchars(strip_tags(trim($value)));
             }
         } else {
-            // Nếu $data không phải là mảng, xử lý như chuỗi
             $data = htmlspecialchars(strip_tags(trim($data)));
         }
         return $data;
     }
-    
+
     function redirect($url) {
         header("Location: $url");
         exit();
@@ -34,75 +30,38 @@
     if(!isset($_GET['id'])){
         redirect('rooms.php'); 
     }
-    
-    
-    // Sử dụng Prepared Statement để tránh lỗi và SQL Injection
-?>
-    
 
-    <?php
-      // Kiểm tra xem room_id có tồn tại trong URL không
-      if (!isset($_GET['id'])) {
-          header('Location: rooms.php'); // Chuyển hướng về trang rooms.php nếu không có room_id
-          exit;
-      }
-      
-      // Lấy room_id từ URL và lọc dữ liệu
-      $room_id = filteration($_GET['id']);
-      
-      // Kết nối đến cơ sở dữ liệu
-      include("connect.inp");
-      
-      // Sử dụng Prepared Statements để tránh SQL Injection
-      $stmt = $con->prepare("SELECT * FROM rooms WHERE room_id = ?");
-      $stmt->bind_param("i", $room_id); // "i" cho biết rằng room_id là một số nguyên
-      $stmt->execute();
-      $room_res = $stmt->get_result();
-      
-      // Kiểm tra xem có phòng nào không
-      if ($room_res->num_rows == 0) {
-          header('Location: rooms.php'); // Chuyển hướng về trang rooms.php nếu không tìm thấy phòng
-          exit;
-      }
-      
-      // Lấy dữ liệu phòng
-      $room_data = $room_res->fetch_assoc();
-      $room_price = $room_data['price'];
-      
-    
-    //tính từ code này nhé
-         //Lấy thông tin phòng từ cơ sở dữ liệu
-      // $id = $_GET[$room_data'room_id'];
-       // $sql = "SELECT room_name, price FROM rooms WHERE room_id =  ? AND availability = ?s";
-       //$stmt = $conn->prepare($sql);
-       // $stmt->bind_param("i", $id);
-        //$stmt->execute();
-       // $result = $stmt->get_result();
-        //$result=$con->query($sql);
-//
-       // if($result->num_rows == 0){
-       //     header('Location: index.php');
-       //     exit;
-       // }
 
-       // $room_data = $result->fetch_assoc();
-       // $room_price = $room_data['price']; // Store room price for JavaScript
-    //?>
-    
+    $room_id = filteration($_GET['id']);
+    include("connect.inp");
+
+    $stmt = $con->prepare("SELECT * FROM rooms WHERE room_id = ?");
+    $stmt->bind_param("i", $room_id);
+    $stmt->execute();
+    $room_res = $stmt->get_result();
+
+    if ($room_res->num_rows == 0) {
+        header('Location: rooms.php');
+        exit;
+    }
+
+    $room_data = $room_res->fetch_assoc();
+    $room_price = $room_data['price'];
+    ?>
+
     <div class="container">
      <div class="row">
-
         <div class="col-12 my-5 mb-4 px-4">
             <h2 class="fw-bold"> CONFIRM BOOKING</h2>
         </div>
         <div class="col-lg-7 col-md-12 px-4">
             <div id="roomCarousel" class="carousel slide" data-bs-ride="carousel">
                 <div class="carousel-inner">
-                    <img src="images/nature-2.jpg" class="card-img-top">
+                    <img src="images/<?php echo $room_data['image_url']; ?>" class="card-img-top">
                 </div>    
             </div>
-            <h5><?php echo$room_data['room_name'];?></h5>
-            <h6 class="mb-4" id="price"><?php echo $room_data['price'];?></h6>
+            <h5><?php echo $room_data['room_name']; ?></h5>
+            <h6 class="mb-4" id="price"><?php echo $room_data['price']; ?></h6>
         </div>
         <div class="col-lg-5 col-md-12 px-4">
             <div class="card mb-4 border-0 shadow-sm rounded-3">
@@ -111,122 +70,135 @@
                         <h6 class="mb-3">BOOKING DETAILS</h6>
                         <div class="row">
                             <div class="col-md-6 mb-3">
-                                <label class="form-label ">Name</label>
-                                <input name="name" type="text" class="form-control shadow-none" required>  
+                                <label class="form-label">Name</label>
+                                <input name="name" type="text" class="form-control shadow-none" required>
                             </div>
 
                             <div class="col-md-6 mb-3">
-                                <label class="form-label ">PhoneNumber</label>
-                                <input name="phonenum" type="number" class="form-control shadow-none" required>  
+                                <label class="form-label">PhoneNumber</label>
+                                <input name="phonenum" type="number" class="form-control shadow-none" required>
                             </div>
 
                             <div class="col-md-12 mb-3">
-                                <label class="form-label ">Address</label>
-                                <input name="address" type="text" class="form-control shadow-none" required>  
+                                <label class="form-label">Address</label>
+                                <input name="address" type="text" class="form-control shadow-none" required>
                             </div>
 
                             <div class="col-md-6 mb-3">
-                                <label class="form-label ">Check-in</label>
-                                <input name="checkin" type="date" class="form-control shadow-none" required>  
+                                <label class="form-label">Check-in</label>
+                                <input name="checkin" type="date" class="form-control shadow-none" required>
                             </div>
 
                             <div class="col-md-6 mb-3">
                                 <label class="form-label mb-1">Check-out</label>
-                                <input name="checkout" type="date" class="form-control shadow-none" required>  
+                                <input name="checkout" type="date" class="form-control shadow-none" required>
                             </div>
+
                             <div class="col-12">
                                 <div class="spinner-border text-info mb-3 d-none" id="info_loader" role="status">
                                     <span class="visually-hidden">Loading.....</span>
                                 </div>
                             </div>
+
                             <div class="col-12">
-                            <h6 class="mb-3 text-danger" id="pay_info">Provide check-in & check-out date!</h6>
-                            <!--<button name="pay_now" class="btn-pay-now " disabled>Pay Now</button>-->
-                                <div class="pay_now" id="pay_now" >
-                                    <!-- Initialize the JS-SDK -->
-                                <script
-                                    src="https://www.paypal.com/sdk/js?client-id=AcRFoe-qt7M7cdr5naUgz1mUGNZkjehzrqzTLh0tYsK-syVpAVkI3lLRkhHC-xhtU0ZpgXMdC68J0m6A&buyer-country=US&currency=USD&components=buttons&enable-funding=card&disable-funding=venmo,paylater"
-                                    data-sdk-integration-source="developer-studio"
-                                ></script>
-                                <script src="app.js"></script>
+                                <h6 class="mb-3 text-danger" id="pay_info">Vui lòng nhập ngày checkin và checkout!</h6>
+                                <div class="pay_now d-none" id="pay_now">
+                                    <script src="https://www.paypal.com/sdk/js?client-id=AcRFoe-qt7M7cdr5naUgz1mUGNZkjehzrqzTLh0tYsK-syVpAVkI3lLRkhHC-xhtU0ZpgXMdC68J0m6A&buyer-country=US&currency=USD&components=buttons&enable-funding=card&disable-funding=venmo,paylater"
+                                        data-sdk-integration-source="developer-studio"></script>
+                                    <script src="app.js"></script>
                                 </div>
                             </div>
                         </div> 
                     </form>
+                </div>
             </div>
-         </div>
         </div>
     </div>
+
+
+    <?php
+// Kết nối cơ sở dữ liệu và kiểm tra phòng
+$room_id = filteration($_GET['id']);
+include("connect.inp");
+$booked_dates = [];
+$stmt = $con->prepare("SELECT check_in, check_out FROM booking_order WHERE room_id = ?");
+$stmt->bind_param("i", $room_id);
+$stmt->execute();
+$result = $stmt->get_result();
+
+while ($row = $result->fetch_assoc()) {
+    $booked_dates[] = ['checkin' => $row['check_in'], 'checkout' => $row['check_out']];
+}
+$stmt->close();
+?>
 <script>
-    function date_diff(startDate, endDate) {
-        // Tính số ngày giữa hai ngày
-        const diffTime = Math.abs(endDate - startDate);
-        return Math.ceil(diffTime / (1000 * 60 * 60 * 24)); // Chuyển đổi từ milliseconds sang days
-    }
-    var payment_usd;
-    function validateDates() {
+    const bookedDates = <?php echo json_encode($booked_dates); ?>;
+</script>
+
+<script>
+function date_diff(startDate, endDate) {
+    const diffTime = Math.abs(endDate - startDate);
+    return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+}
+
+function validateDates() {
     let checkin = booking_form.elements['checkin'].value;
     let checkout = booking_form.elements['checkout'].value;
-    
-    // Chuyển đổi ngày thành định dạng Date để dễ so sánh
     let checkinDate = new Date(checkin);
     let checkoutDate = new Date(checkout);
     let today = new Date();
-    
-    // Đặt thời gian của ngày hiện tại về 0 giờ để so sánh dễ hơn
     today.setHours(0, 0, 0, 0);
 
-    // Kiểm tra nếu ngày check-in là quá khứ
     if (checkinDate < today) {
-        pay_info.textContent = "Check-in date cannot be in the past!";
-        booking_form.elements['pay_now'].setAttribute('disabled', true);
+        pay_info.textContent = "Ngày check-in không thể là ngày trong quá khứ!";
         return false;
     }
-    
-    // Kiểm tra nếu ngày check-out trước ngày check-in
+
     if (checkoutDate <= checkinDate) {
-        pay_info.textContent = "Check-out date must be after check-in date!";
-        booking_form.elements['pay_now'].setAttribute('disabled', true);
+        pay_info.textContent = "Ngày check-out không thể nhỏ hơn ngày check-in!";
         return false;
     }
-    
-    // Nếu ngày hợp lệ, bật nút và ẩn thông báo lỗi
-    //pay_info.textContent = "";
-    //booking_form.elements['pay_now'].removeAttribute('disabled');
-    //return true;
 
-    // Tính số ngày
-    if (checkin && checkout) {
-            // Tính số ngày
-            let count_days = date_diff(checkinDate, checkoutDate);
-            let price = parseFloat(document.getElementById('price').textContent); // Lấy giá phòng từ phần tử HTML
-            let payment_vnd = price * count_days;
-            let usd = 23000;
-            var payment_usd = payment_vnd / usd;
 
-            // Hiển thị thông tin thanh toán
-            pay_info.innerHTML = "Total days: " + count_days + "<br>Total payment: " + payment_vnd.toFixed(2) + "VND = " +payment_usd.toFixed(2) + "$";
-            
-            // Bật nút thanh toán
-            booking_form.elements['pay_now'].removeAttribute('disabled');
-        } else {
-            // Nếu chưa chọn đủ ngày, ẩn thông tin thanh toán
-            pay_info.textContent = "Provide check-in & check-out date!";
-            booking_form.elements['pay_now'].setAttribute('disabled', true);
+    for (let booking of bookedDates) {
+        let bookedCheckin = new Date(booking.checkin);
+        let bookedCheckout = new Date(booking.checkout);
+
+        if ((checkinDate < bookedCheckout) && (checkoutDate > bookedCheckin)) {
+            pay_info.textContent = "Ngày bạn chọn trùng với một khoảng thời gian đã đặt!";
+            return false;
         }
+    }
 
-        return true;
+    let count_days = date_diff(checkinDate, checkoutDate);
+    let price = parseFloat(document.getElementById('price').textContent);
+    let payment_vnd = price * count_days;
+    let usd = 23000;
+    let payment_usd = payment_vnd / usd;
+
+    pay_info.innerHTML = "Total days: " + count_days + "<br>Total payment: " + payment_vnd.toFixed(2) + " VND = " + payment_usd.toFixed(2) + "$";
+
+    return true;
 }
 
-// Gắn sự kiện onchange vào các input ngày
-booking_form.elements['checkin'].addEventListener('change', validateDates);
-booking_form.elements['checkout'].addEventListener('change', validateDates);
+function validateForm() {
+    let requiredFields = ['name', 'phonenum', 'address', 'checkin', 'checkout'];
+    let allFilled = requiredFields.every(field => booking_form.elements[field].value.trim() !== '');
+
+    if (allFilled && validateDates()) {
+        document.getElementById('pay_now').classList.remove('d-none');
+    } else {
+        document.getElementById('pay_now').classList.add('d-none');
+    }
+}
+
+document.querySelectorAll('#booking_form input').forEach(input => {
+    input.addEventListener('input', validateForm);
+});
 </script>
 
-    
-    <?php require('inc/footer.php'); ?>
-    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+<?php require('inc/footer.php'); ?>
+<script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
 </body>
 </html>
-        

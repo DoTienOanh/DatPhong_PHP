@@ -32,62 +32,7 @@
 require('inc/header.php');
 ?>
 
-<?php
-// Bắt đầu phiên làm việc
-session_start();
 
-// Kết nối cơ sở dữ liệu
-include("connect.inp");
-
-// Xử lý khi người dùng gửi form
-if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    // Lấy dữ liệu từ form
-    $check_in = $_POST['check_in'];
-    $check_out = $_POST['check_out'];
-    $room_id = $_POST['room_id']; // Lấy ID phòng từ form
-
-     // Chuyển đổi định dạng từ 'dd/mm/yyyy' sang 'yyyy/mm/dd'
-     $check_in_date = DateTime::createFromFormat('d/m/Y', $check_in);
-     $check_out_date = DateTime::createFromFormat('d/m/Y', $check_out);
-
-    // Kiểm tra xem phòng có còn trống không
-    $query = "SELECT * FROM booking_order 
-              WHERE room_id = '$room_id' 
-              AND (
-                  (check_in <= '$check_out_date' AND check_out >= '$check_in_date') 
-                  AND booking_status != 'Cancelled'
-              )";
-
-    $result = mysqli_query($con, $query);
-
-      if (mysqli_num_rows($result) > 0) {
-        // Phòng không còn trống
-        echo "<script>
-                document.getElementById('alertModalBody').innerText = 'Phòng đã được đặt trong khoảng thời gian này. Vui lòng chọn thời gian khác.';
-                var myModal = new bootstrap.Modal(document.getElementById('alertModal'));
-                myModal.show();
-              </script>";
-    } else {
-        // Thực hiện đặt phòng
-        $insert_query = "INSERT INTO booking_order (room_id, check_in, check_out, booking_status) 
-                        VALUES ('$room_id', '$check_in_date', '$check_out_date', 'Pending')";
-        if (mysqli_query($con, $insert_query)) {
-            echo "<script>
-                    document.getElementById('alertModalBody').innerText = 'Đặt phòng thành công!';
-                    var myModal = new bootstrap.Modal(document.getElementById('alertModal'));
-                    myModal.show();
-                  </script>";
-        } else {
-            echo "<script>
-                    document.getElementById('alertModalBody').innerText = 'Không thể đặt phòng: " . mysqli_error($con) . "';
-                    var myModal = new bootstrap.Modal(document.getElementById('alertModal'));
-                    myModal.show();
-                  </script>";
-        }
-    }
-}
-
-?>
 
 
 
@@ -137,57 +82,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     </div>
   </div>
 </div> -->
-<div class="container">
-  <div class="row">
-    <div class="col-lg-12 bg-white shadow p-4 rounded">
-     <h5 class="mb-4"></h5> 
-     <form method="POST">
-      <div class="row align-items-end">
-        <div class="col-lg-3 mb-3">
-          <label class="form-label" style="font-weight:500;">Check-in</label>
-          <input type="date" name="check_in" class="form-control shadow-none" required>
-        </div>
-        <div class="col-lg-3 mb-3">
-          <label class="form-label" style="font-weight:500;">Check-out</label>
-          <input type="date" name="check_out" class="form-control shadow-none" required>
-        </div>
-        <div class="col-lg-3 mb-3">
-          <label class="form-label" style="font-weight:500;">Room</label>
-          <select name="room_id" class="form-select shadow-none" required>
-            <option value="">Chọn phòng</option>
-            <?php
-            // Lấy danh sách các phòng có sẵn
-            $room_res = mysqli_query($con, "SELECT * FROM rooms WHERE status = 'Available'");
-            while ($room_data = mysqli_fetch_assoc($room_res)) {
-                echo "<option value='{$room_data['room_id']}'>{$room_data['room_name']}</option>";
-            }
-            ?>
-          </select>
-        </div>
-        <!-- <div class="col-lg-3 mb-3">
-          <label class="form-label" style="font-weight:500;">Adult</label>
-          <select class="form-select shadow-none" required>
-              <option value="1">One</option>
-              <option value="2">Two</option>
-              <option value="3">Three</option>
-          </select>
-        </div>
-        <div class="col-lg-2 mb-3">
-          <label class="form-label" style="font-weight:500;">Children</label>
-          <select class="form-select shadow-none" required>
-              <option value="1">One</option>
-              <option value="2">Two</option>
-              <option value="3">Three</option>
-          </select>
-        </div> -->
-        <div class="col-lg-1 mb-lg-3 mt-2">
-          <button type="submit" class="btn text-white shadow-none custom-bg">Submit</button>
-        </div>
-      </div>
-     </form>
-    </div>
-  </div>
-</div>
+
 
 
 
@@ -235,7 +130,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                   $facilities_data
                 </div>
                 <div class="d-flex justify-content-evenly">
-                  <a href="confirm_booking" class="btn btn-sm text-white custom-bg shadow-none">Đặt ngay</a>
+                  <a href="confirm_booking.php?id=$room_data[room_id]" class="btn btn-sm text-white custom-bg shadow-none">Đặt ngay</a>
                   <a href="room_details.php?id=$room_data[room_id]" class="btn btn-sm btn-outline-dark shadow-none">Chi tiết</a>
                  
                 </div>
