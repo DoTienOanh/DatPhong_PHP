@@ -5,7 +5,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $booking_id = $_POST['booking_id'];
 
     // Cập nhật trạng thái booking thành 'Cancelled'
-    $update_query = "UPDATE booking_order SET booking_status = 'Cancelled' WHERE booking_id = ?";
+    $update_query = "UPDATE booking_order SET booking_status = 'pending' WHERE booking_id = ?";
     $stmt = $con->prepare($update_query);
     $stmt->bind_param("i", $booking_id);
 
