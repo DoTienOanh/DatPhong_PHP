@@ -64,7 +64,7 @@ if ($result->num_rows > 0) {
                 <!-- Hiển thị hình ảnh phòng -->
                 <img src="images/{$data['image_url']}" alt="Room Image" class="img-fluid rounded mb-3" style="width: 100%; height: 111px; object-fit: cover;">             
                 <h5 class='fw-bold'>{$data['room_name']}</h5>
-                <p>{$data['price']} VND/Đêm</p>
+                <p>{$data['price']} VND/day</p>
                 <p>
                     <b>Check in:</b> $checkin <br>
                     <b>Check out:</b> $checkout

@@ -34,54 +34,45 @@ require('inc/header.php');
 
 
 
-
-
 <!-- check availability form -->
-<!-- <div class="container">
+ <div class="container">
   <div class="row">
     <div class="col-lg-12 bg-white shadow p-4 rounded">
      <h5 class="mb-4"></h5> 
-     <form>
-      <div class="row align-items-end">
+     <form method="GET" action="">
+    <div class="row align-items-end">
         <div class="col-lg-3 mb-3">
-          <label class="form-label" style="font-weight:500;">Check-in</label>
-          <input type="date" class="form-control shadow-none">
+            <label class="form-label" style="font-weight:500;">Check-in</label>
+            <input type="date" name="checkin_date" class="form-control shadow-none">
         </div>
-        <div class="col-lg-3  mb-3">
-          <label class="form-label" style="font-weight:500;">Check-out</label>
-          <input type="date" class="form-control shadow-none">
+        <div class="col-lg-3 mb-3">
+            <label class="form-label" style="font-weight:500;">Check-out</label>
+            <input type="date" name="checkout_date" class="form-control shadow-none">
         </div>
-        <div class="col-lg-3  mb-3">
-          <label class="form-label" style="font-weight:500;">Adult</label>
-          
-            <select class="form-select shadow-none">
-             
-              <option value="1">1</option>
-              <option value="2">2</option>
-              <option value="3">3</option>
+        <div class="col-lg-3 mb-3">
+            <label class="form-label" style="font-weight:500;">Adult</label>
+            <select name="adult_count" class="form-select shadow-none">
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
             </select>
-          
         </div>
-        <div class="col-lg-2  mb-3">
-          <label class="form-label" style="font-weight:500;">Children</label>
-            
-            <select class="form-select shadow-none">
-             
-              <option value="1">1</option>
-              <option value="2">2</option>
-              <option value="3">3</option>
+        <div class="col-lg-2 mb-3">
+            <label class="form-label" style="font-weight:500;">Children</label>
+            <select name="children_count" class="form-select shadow-none">
+                <option value="0">0</option>
+                <option value="1">1</option>
+                <option value="2">2</option>
             </select>
-            
         </div>
         <div class="col-lg-1 mb-lg-3 mt-2">
-          <button type="submit" class ="btn text-white shadow-none custom-bg">Submit</button>
+            <button type="submit" class="btn text-white shadow-none custom-bg">Submit</button>
         </div>
-
-      </div>
-     </form>
+    </div>
+</form>
     </div>
   </div>
-</div> -->
+</div> 
 
 
 
@@ -91,60 +82,80 @@ require('inc/header.php');
  <div class="container">
   <div class="row">
   
-    
+  <?php
+include("connect.inp");
 
-    <?php
-        include("connect.inp");
-        $room_res = mysqli_query($con,"SELECT * FROM `rooms` WHERE status = 'available'");
-        
+// Retrieve filter values from URL (GET) and set default conditions
+$checkin_date = isset($_GET['checkin_date']) ? $_GET['checkin_date'] : '';
+$checkout_date = isset($_GET['checkout_date']) ? $_GET['checkout_date'] : '';
+$adult_count = isset($_GET['adult_count']) ? $_GET['adult_count'] : 1;
+$children_count = isset($_GET['children_count']) ? $_GET['children_count'] : 0;
 
-        while($room_data = mysqli_fetch_assoc($room_res))
-        {
-           //get facilities of room
-           $fac_q = mysqli_query($con,"SELECT f.facility_name FROM `facilities` f
-            INNER JOIN room_facilities rfac ON f.facility_id=rfac.facility_id
-             WHERE rfac.room_id = '{$room_data['room_id']}'");
-           $facilities_data = "";
-           while($fac_row = mysqli_fetch_assoc($fac_q)){
-            $facilities_data .= "<span class='badge rounded-pill bg-light text-dark text-wrap'>
-            $fac_row[facility_name]
-            </span>";
-           }
-           //get images
-           
-           $room_thumb = $room_data['image_url'] ? $room_data['image_url'] : "default.jpg";
-        // print room card 
-        echo <<<data
-          <div class="col-lg-4 col-md-6 my-3">
-            <div class="card border-0 shadow" style="max-width: 350px; margin: auto;">
-              <img src="images/$room_thumb" class="card-img-top">
-              <div class="card-body">
+// Build the SQL query with filters
+$sql = "SELECT * FROM `rooms` WHERE status = 'available'";
+
+// Add conditions based on filters
+if ($checkin_date && $checkout_date) {
+    $sql .= " AND NOT EXISTS (
+                SELECT 1 FROM `booking_order`
+                WHERE rooms.room_id = booking_order.room_id
+                AND ('$checkin_date' BETWEEN booking_order.check_in AND booking_order.check_out
+                OR '$checkout_date' BETWEEN booking_order.check_in AND booking_order.check_out)
+              )";
+}
+if ($adult_count) {
+    $sql .= " AND max_adults >= $adult_count";  // Updated column name
+}
+if ($children_count) {
+    $sql .= " AND max_children >= $children_count";  // Updated column name
+}
+
+// Execute the query and handle errors
+$room_res = mysqli_query($con, $sql);
+
+if (!$room_res) {
+    die("Query failed: " . mysqli_error($con));
+}
+
+// Display results
+while ($room_data = mysqli_fetch_assoc($room_res)) {
+    $fac_q = mysqli_query($con, "SELECT f.facility_name FROM `facilities` f
+                    INNER JOIN room_facilities rfac ON f.facility_id=rfac.facility_id
+                    WHERE rfac.room_id = '{$room_data['room_id']}'");
+    $facilities_data = "";
+    while ($fac_row = mysqli_fetch_assoc($fac_q)) {
+        $facilities_data .= "<span class='badge rounded-pill bg-light text-dark text-wrap'>$fac_row[facility_name]</span>";
+    }
+    $room_thumb = $room_data['image_url'] ? $room_data['image_url'] : "default.jpg";
+
+    // Display the room
+    echo <<<data
+    <div class="col-lg-4 col-md-6 my-3">
+        <div class="card border-0 shadow" style="max-width: 350px; margin: auto;">
+            <img src="images/$room_thumb" class="card-img-top">
+            <div class="card-body">
                 <h5>$room_data[room_name]</h5>
-                <h6 class="mb-4">$room_data[price]VND</h6>
+                <h6 class="mb-4">$room_data[price] VND</h6>
                 <div class="features mb-4">
-                  <h6 class="mb-1">Mô tả</h6>
-                  $room_data[description]
+                    <h6 class="mb-1">Description</h6>
+                    $room_data[description]
                 </div>
                 <div class="facilities mb-4">
-                  <h6 class="mb-1">Cơ sở vật chất</h6>
-                  $facilities_data
+                    <h6 class="mb-1">Facilities</h6>
+                    $facilities_data
                 </div>
                 <div class="d-flex justify-content-evenly">
-                  <a href="confirm_booking.php?id=$room_data[room_id]" class="btn btn-sm text-white custom-bg shadow-none">Đặt ngay</a>
-                  <a href="room_details.php?id=$room_data[room_id]" class="btn btn-sm btn-outline-dark shadow-none">Chi tiết</a>
-                 
+                    <a href="confirm_booking.php?id=$room_data[room_id]" class="btn btn-sm text-white custom-bg shadow-none">Book Now</a>
+                    <a href="room_details.php?id=$room_data[room_id]" class="btn btn-sm btn-outline-dark shadow-none">Details</a>
                 </div>
-
-              
-              </div>
             </div>
-          </div>
-          
+        </div>
+    </div>
+    data;
+}
+?>
 
-        data;
 
-        }
-        ?>
 
 
 
@@ -187,7 +198,6 @@ data-sdk-integration-source="developer-studio"
 <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
 <!-- SweetAlert2 JS -->
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
 
 </body>
 </html>
