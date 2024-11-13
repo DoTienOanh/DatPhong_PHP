@@ -39,7 +39,7 @@ require('inc/header.php');
   <div class="row">
     <div class="col-lg-12 bg-white shadow p-4 rounded">
      <h5 class="mb-4"></h5> 
-     <form method="GET" action="" id = "check" onsubmit="return validateDates();">
+     <form method="GET" action="">
     <div class="row align-items-end">
         <div class="col-lg-3 mb-3">
             <label class="form-label" id ="check" style="font-weight:500;">Check-in</label>
@@ -185,75 +185,7 @@ while ($room_data = mysqli_fetch_assoc($room_res)) {
  require('inc/footer.php');
  ?>
 
-<script>
-function date_diff(startDate, endDate) {
-    const diffTime = Math.abs(endDate - startDate);
-    return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-}
 
-function validateDates() {
-    let checkin = check.elements['checkin_date'].value;
-    let checkout = check.elements['checkout_date'].value;
-    let checkinDate = new Date(checkin);
-    let checkoutDate = new Date(checkout);
-    let today = new Date();
-    today.setHours(0, 0, 0, 0);
-
-    if (checkinDate < today) {
-        pay_info.textContent = "Ngày check-in không thể là ngày trong quá khứ!";
-        return false;
-    }
-
-    if (checkoutDate <= checkinDate) {
-        pay_info.textContent = "Ngày check-out không thể nhỏ hơn ngày check-in!";
-        return false;
-    }
-
-    
-
-  document.querySelectorAll('#check input').forEach(input => {
-    input.addEventListener('input', validateForm);
-});
-</script>
-
-<script>
-function date_diff(startDate, endDate) {
-    const diffTime = Math.abs(endDate - startDate);
-    return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-}
-
-function validateDates() {
-    // Lấy giá trị từ các trường input của form
-    let check = document.getElementById('check');
-    let checkin = check.elements['checkin_date'].value;
-    let checkout = check.elements['checkout_date'].value;
-    
-    // Chuyển đổi giá trị thành đối tượng Date
-    let checkinDate = new Date(checkin);
-    let checkoutDate = new Date(checkout);
-    let today = new Date();
-    today.setHours(0, 0, 0, 0); // Đặt giờ về 0 để chỉ so sánh ngày
-
-    // Thông báo lỗi sẽ được hiển thị tại thẻ có id "pay_info"
-    let pay_info = document.getElementById("pay_info");
-
-    // Kiểm tra ngày check-in không được là ngày trong quá khứ
-    if (checkinDate < today) {
-        pay_info.textContent = "Ngày check-in không thể là ngày trong quá khứ!";
-        return false;
-    }
-
-    // Kiểm tra ngày check-out không thể nhỏ hơn hoặc bằng ngày check-in
-    if (checkoutDate <= checkinDate) {
-        pay_info.textContent = "Ngày check-out không thể nhỏ hơn ngày check-in!";
-        return false;
-    }
-
-    // Xóa thông báo lỗi nếu mọi thứ hợp lệ
-    pay_info.textContent = "";
-    return true; // Cho phép form gửi nếu không có lỗi
-}
-</script>
 
 <script
 src="https://www.paypal.com/sdk/js?client-id=AcRFoe-qt7M7cdr5naUgz1mUGNZkjehzrqzTLh0tYsK-syVpAVkI3lLRkhHC-xhtU0ZpgXMdC68J0m6A&buyer-country=US&currency=USD&components=buttons&enable-funding=card&disable-funding=venmo,paylater"
