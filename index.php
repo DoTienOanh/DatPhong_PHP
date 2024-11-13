@@ -8,7 +8,8 @@
     require('inc/links.php');
     ?>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"/>
-   
+   <!-- SweetAlert2 CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
     <style>
       .availability-form{
         margin-top:-50px;
@@ -31,46 +32,12 @@
 require('inc/header.php');
 ?>
 
-<!-- <div class="container-fluid px-lg-4 mt-4">
-  <div class="swiper swiper-container">
-    <div class="swiper-wrapper">
-      <div class="swiper-slide">
-        <img src="images/nature-1.jpg" class="w-100 d-block">
-      </div>
-      <div class="swiper-slide">
-        <img src="images/nature-2.jpg"class="w-100 d-block">
-      </div>
-      <div class="swiper-slide">
-        <img src="images/nature-3.jpg" class="w-100 d-block">
-      </div>
-      <div class="swiper-slide">
-        <img src="images/nature-4.jpg"class="w-100 d-block">
-      </div>
-    </div>
-  </div>  
-</div> -->
 
-<!-- <div class="modal fade" id="loginModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h1 class="modal-title fs-5" id="staticBackdropLabel">Modal title</h1>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body">
-        ...
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-primary">Understood</button>
-      </div>
-    </div>
-  </div>
-</div> -->
+
 
 
 <!-- check availability form -->
-<div class="container">
+<!-- <div class="container">
   <div class="row">
     <div class="col-lg-12 bg-white shadow p-4 rounded">
      <h5 class="mb-4"></h5> 
@@ -89,9 +56,9 @@ require('inc/header.php');
           
             <select class="form-select shadow-none">
              
-              <option value="1">One</option>
-              <option value="2">Two</option>
-              <option value="3">Three</option>
+              <option value="1">1</option>
+              <option value="2">2</option>
+              <option value="3">3</option>
             </select>
           
         </div>
@@ -100,9 +67,9 @@ require('inc/header.php');
             
             <select class="form-select shadow-none">
              
-              <option value="1">One</option>
-              <option value="2">Two</option>
-              <option value="3">Three</option>
+              <option value="1">1</option>
+              <option value="2">2</option>
+              <option value="3">3</option>
             </select>
             
         </div>
@@ -114,7 +81,9 @@ require('inc/header.php');
      </form>
     </div>
   </div>
-</div>
+</div> -->
+
+
 
 
 <!-- Our Rooms -->
@@ -161,8 +130,9 @@ require('inc/header.php');
                   $facilities_data
                 </div>
                 <div class="d-flex justify-content-evenly">
-                  <a href="#" class="btn btn-sm text-white custom-bg shadow-none">Đặt ngay</a>
-                  <a href="#" class="btn btn-sm btn-outline-dark shadow-none">Chi tiết</a>
+                  <a href="confirm_booking.php?id=$room_data[room_id]" class="btn btn-sm text-white custom-bg shadow-none">Đặt ngay</a>
+                  <a href="room_details.php?id=$room_data[room_id]" class="btn btn-sm btn-outline-dark shadow-none">Chi tiết</a>
+                 
                 </div>
 
               
@@ -190,22 +160,34 @@ require('inc/header.php');
  require('inc/footer.php');
  ?>
 
+<!-- Modal -->
+<div class="modal fade" id="alertModal" tabindex="-1" aria-labelledby="alertModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="alertModalLabel">Thông báo</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body" id="alertModalBody">
+        <!-- Nội dung thông báo sẽ được thêm vào đây -->
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
 <script
 src="https://www.paypal.com/sdk/js?client-id=AcRFoe-qt7M7cdr5naUgz1mUGNZkjehzrqzTLh0tYsK-syVpAVkI3lLRkhHC-xhtU0ZpgXMdC68J0m6A&buyer-country=US&currency=USD&components=buttons&enable-funding=card&disable-funding=venmo,paylater"
 data-sdk-integration-source="developer-studio"
 ></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
-<!-- <script>
-  var swiper = new Swiper(".swiper-container", {
-    spaceBetween: 30,
-    effect: "fade",
-    loop:true,
-    autoplay:{
-      delay:3500,
-      disableOnInteraction: false,
-    }
-  }); -->
-</script>
+<!-- SweetAlert2 JS -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+
 </body>
 </html>
