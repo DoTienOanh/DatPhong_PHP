@@ -42,15 +42,15 @@ require('inc/header.php');
      <form method="GET" action="">
     <div class="row align-items-end">
         <div class="col-lg-3 mb-3">
-            <label class="form-label" style="font-weight:500;">Check-in</label>
+            <label class="form-label" id ="check" style="font-weight:500;">Check-in</label>
             <input type="date" name="checkin_date" class="form-control shadow-none">
         </div>
         <div class="col-lg-3 mb-3">
-            <label class="form-label" style="font-weight:500;">Check-out</label>
+            <label class="form-label"id ="check" style="font-weight:500;">Check-out</label>
             <input type="date" name="checkout_date" class="form-control shadow-none">
         </div>
         <div class="col-lg-3 mb-3">
-            <label class="form-label" style="font-weight:500;">Adult</label>
+            <label class="form-label"id ="check" style="font-weight:500;">Adult</label>
             <select name="adult_count" class="form-select shadow-none">
                 <option value="1">1</option>
                 <option value="2">2</option>
@@ -60,7 +60,7 @@ require('inc/header.php');
             </select>
         </div>
         <div class="col-lg-2 mb-3">
-            <label class="form-label" style="font-weight:500;">Children</label>
+            <label class="form-label"id ="check" style="font-weight:500;">Children</label>
             <select name="children_count" class="form-select shadow-none">
                 <option value="0">0</option>
                 <option value="1">1</option>
@@ -185,23 +185,6 @@ while ($room_data = mysqli_fetch_assoc($room_res)) {
  require('inc/footer.php');
  ?>
 
-<!-- Modal -->
-<div class="modal fade" id="alertModal" tabindex="-1" aria-labelledby="alertModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="alertModalLabel">Thông báo</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body" id="alertModalBody">
-        <!-- Nội dung thông báo sẽ được thêm vào đây -->
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
-      </div>
-    </div>
-  </div>
-</div>
 
 
 <script
