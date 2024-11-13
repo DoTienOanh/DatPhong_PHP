@@ -146,7 +146,7 @@ function date_diff(startDate, endDate) {
     const diffTime = Math.abs(endDate - startDate);
     return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
 }
-
+let payment_usd = 0;
 function validateDates() {
     let checkin = booking_form.elements['checkin'].value;
     let checkout = booking_form.elements['checkout'].value;
@@ -179,10 +179,10 @@ function validateDates() {
     let count_days = date_diff(checkinDate, checkoutDate);
     let price = parseFloat(document.getElementById('price').textContent);
     let payment_vnd = price * count_days;
-    let usd = 23000;
-    let payment_usd = payment_vnd / usd;
+    const usd = 23000;
+    payment_usd = (payment_vnd / usd).toFixed(2);
 
-    pay_info.innerHTML = "Total days: " + count_days + "<br>Total payment: " + payment_vnd.toFixed(2) + " VND = " + payment_usd.toFixed(2) + "$";
+    pay_info.innerHTML = "Total days: " + count_days + "<br>Total payment: " + payment_vnd.toFixed(2) + " VND = " + payment_usd + "$";
 
     return true;
 }
