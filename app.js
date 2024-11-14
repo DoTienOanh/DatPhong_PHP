@@ -10,7 +10,7 @@ paypal.Buttons({
     },
     onApprove: function(data, actions) {
         return actions.order.capture().then(function(details) {
-            alert('Giao dịch đã hoàn tất bởi ' + details.payer.name.given_name);
+            alert('Giao dịch đã hoàn tất bởi ' + details.payer.name.given_name+'. Vui lòng kiểm tra email của bạn.');
             // Thực hiện các hành động khác sau khi thanh toán thành công
         });
     },
