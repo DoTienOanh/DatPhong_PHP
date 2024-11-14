@@ -16,6 +16,6 @@ paypal.Buttons({
     },
     onError: function(err) {
         console.error(err);
-        alert('An error occurred during the transaction. Please try again.');
+        alert('Đã xảy ra lỗi trong quá trình giao dịch. Vui lòng thử lại.');
     }
 }).render('#pay_now');
