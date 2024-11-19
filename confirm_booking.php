@@ -141,6 +141,11 @@
          const bookedDates = <?php echo json_encode($booked_dates); ?>;
     </script>
 
+    <script>
+         const roomId = <?php echo json_encode($room_id); ?>;
+         const roomPrice = <?php echo json_encode($room_price); ?>;
+    </script>
+
 <script>
 function date_diff(startDate, endDate) {
     const diffTime = Math.abs(endDate - startDate);

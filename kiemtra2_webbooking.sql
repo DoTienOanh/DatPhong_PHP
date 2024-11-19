@@ -2,10 +2,10 @@
 -- version 5.2.1
 -- https://www.phpmyadmin.net/
 --
--- Host: 127.0.0.1
--- Generation Time: Nov 14, 2024 at 04:40 AM
--- Server version: 10.4.28-MariaDB
--- PHP Version: 8.0.28
+-- Máy chủ: 127.0.0.1
+-- Thời gian đã tạo: Th10 14, 2024 lúc 04:40 AM
+-- Phiên bản máy phục vụ: 10.4.28-MariaDB
+-- Phiên bản PHP: 8.0.28
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -18,13 +18,13 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Database: `kiemtra2_webbooking`
+-- Cơ sở dữ liệu: `kiemtra2_webbooking`
 --
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `booking_confirmation`
+-- Cấu trúc bảng cho bảng `booking_confirmation`
 --
 
 CREATE TABLE `booking_confirmation` (
@@ -35,7 +35,7 @@ CREATE TABLE `booking_confirmation` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data for table `booking_confirmation`
+-- Đang đổ dữ liệu cho bảng `booking_confirmation`
 --
 
 INSERT INTO `booking_confirmation` (`confirmation_id`, `booking_id`, `qr_code`, `confirmation_date`) VALUES
@@ -48,7 +48,7 @@ INSERT INTO `booking_confirmation` (`confirmation_id`, `booking_id`, `qr_code`, 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `booking_order`
+-- Cấu trúc bảng cho bảng `booking_order`
 --
 
 CREATE TABLE `booking_order` (
@@ -62,29 +62,25 @@ CREATE TABLE `booking_order` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data for table `booking_order`
+-- Đang đổ dữ liệu cho bảng `booking_order`
 --
 
 INSERT INTO `booking_order` (`booking_id`, `user_id`, `room_id`, `check_in`, `check_out`, `booking_status`, `order_id`) VALUES
-(1, 1, 1, '2024-11-15', '2024-11-21', 'Confirmed', 'ORD_1001'),
-(2, 2, 2, '2024-10-03', '2024-10-06', 'Pending', 'ORD_1002'),
+(1, 1, 1, '2024-11-11', '2024-11-20', 'Confirmed', 'ORD_1001'),
+(2, 2, 2, '2024-10-03', '2024-10-06', 'Cancelled', 'ORD_1002'),
 (3, 3, 3, '2024-10-04', '2024-10-08', 'Cancelled', 'ORD_1003'),
-(4, 4, 4, '2024-10-05', '2024-10-10', 'Confirmed', 'ORD_1004'),
-(5, 5, 5, '2024-10-06', '2024-10-09', 'Confirmed', 'ORD_1005'),
+(4, 4, 4, '2024-10-05', '2024-10-10', 'Cancelled', 'ORD_1004'),
+(5, 5, 5, '2024-10-06', '2024-10-09', 'Cancelled', 'ORD_1005'),
 (6, 6, 6, '2024-10-07', '2024-10-11', 'Pending', 'ORD_1006'),
 (7, 7, 7, '2024-10-08', '2024-10-12', 'Confirmed', 'ORD_1007'),
 (8, 8, 8, '2024-10-09', '2024-10-14', 'Cancelled', 'ORD_1008'),
-(9, 9, 9, '2024-10-10', '2024-10-15', 'Pending', 'ORD_1009'),
-(10, 10, 10, '2024-10-11', '2024-10-16', 'Confirmed', 'ORD_1010'),
-(15, NULL, 9, '2024-11-13', '2024-11-16', 'Pending', NULL),
-(16, NULL, 9, '2024-11-13', '2024-11-16', 'Pending', NULL),
-(17, NULL, 2, '2024-11-06', '2024-11-10', 'Pending', NULL),
-(20, NULL, 1, '0000-00-00', '0000-00-00', 'Pending', NULL);
+(9, 9, 9, '2024-10-10', '2024-10-15', 'Confirmed', 'ORD_1009'),
+(10, 10, 10, '2024-10-11', '2024-10-16', 'Confirmed', 'ORD_1010');
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `customer_details`
+-- Cấu trúc bảng cho bảng `customer_details`
 --
 
 CREATE TABLE `customer_details` (
@@ -98,11 +94,10 @@ CREATE TABLE `customer_details` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data for table `customer_details`
+-- Đang đổ dữ liệu cho bảng `customer_details`
 --
 
 INSERT INTO `customer_details` (`user_id`, `ho_ten`, `email`, `so_dien_thoai`, `dia_chi`, `gioi_tinh`, `ngay_sinh`) VALUES
-(0, '', '', '', '', NULL, NULL),
 (1, 'Nguyen Van A', 'vana@example.com', '0901234567', '123 Le Loi, HCM', 'Nam', '1985-05-10'),
 (2, 'Le Thi B', 'leb@example.com', '0912345678', '456 Tran Hung Dao, HCM', 'Nu', '1990-07-15'),
 (3, 'Tran Van C', 'tvc@example.com', '0923456789', '789 Nguyen Trai, HCM', 'Nam', '1978-09-20'),
@@ -112,12 +107,13 @@ INSERT INTO `customer_details` (`user_id`, `ho_ten`, `email`, `so_dien_thoai`, `
 (7, 'Vu Thi G', 'vtg@example.com', '0967890123', '111 Pham Ngu Lao, HCM', 'Nu', '1980-08-30'),
 (8, 'Le Van H', 'lvh@example.com', '0978901234', '222 Cong Quynh, HCM', 'Nam', '1975-06-25'),
 (9, 'Tran Thi I', 'tti@example.com', '0989012345', '333 Vo Van Kiet, HCM', 'Nu', '1992-04-10'),
-(10, 'Phan Van J', 'pvj@example.com', '0990123456', '444 Ly Tu Trong, HCM', 'Nam', '1985-01-15');
+(10, 'Phan Van J', 'pvj@example.com', '0990123456', '444 Ly Tu Trong, HCM', 'Nam', '1985-01-15'),
+(11, '', '', '', '', NULL, NULL);
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `facilities`
+-- Cấu trúc bảng cho bảng `facilities`
 --
 
 CREATE TABLE `facilities` (
@@ -126,7 +122,7 @@ CREATE TABLE `facilities` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data for table `facilities`
+-- Đang đổ dữ liệu cho bảng `facilities`
 --
 
 INSERT INTO `facilities` (`facility_id`, `facility_name`) VALUES
@@ -144,7 +140,7 @@ INSERT INTO `facilities` (`facility_id`, `facility_name`) VALUES
 -- --------------------------------------------------------
 
 --
--- Table structure for table `payment_details`
+-- Cấu trúc bảng cho bảng `payment_details`
 --
 
 CREATE TABLE `payment_details` (
@@ -158,7 +154,7 @@ CREATE TABLE `payment_details` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data for table `payment_details`
+-- Đang đổ dữ liệu cho bảng `payment_details`
 --
 
 INSERT INTO `payment_details` (`payment_id`, `booking_id`, `amount`, `payment_date`, `payment_status`, `payment_method`, `trans_id`) VALUES
@@ -172,7 +168,7 @@ INSERT INTO `payment_details` (`payment_id`, `booking_id`, `amount`, `payment_da
 -- --------------------------------------------------------
 
 --
--- Table structure for table `rooms`
+-- Cấu trúc bảng cho bảng `rooms`
 --
 
 CREATE TABLE `rooms` (
@@ -189,7 +185,7 @@ CREATE TABLE `rooms` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data for table `rooms`
+-- Đang đổ dữ liệu cho bảng `rooms`
 --
 
 INSERT INTO `rooms` (`room_id`, `room_name`, `price`, `room_type`, `max_adults`, `max_children`, `status`, `description`, `image_url`, `availability`) VALUES
@@ -207,7 +203,7 @@ INSERT INTO `rooms` (`room_id`, `room_name`, `price`, `room_type`, `max_adults`,
 -- --------------------------------------------------------
 
 --
--- Table structure for table `room_facilities`
+-- Cấu trúc bảng cho bảng `room_facilities`
 --
 
 CREATE TABLE `room_facilities` (
@@ -216,7 +212,7 @@ CREATE TABLE `room_facilities` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data for table `room_facilities`
+-- Đang đổ dữ liệu cho bảng `room_facilities`
 --
 
 INSERT INTO `room_facilities` (`room_id`, `facility_id`) VALUES
@@ -244,7 +240,7 @@ INSERT INTO `room_facilities` (`room_id`, `facility_id`) VALUES
 -- --------------------------------------------------------
 
 --
--- Table structure for table `user_cred`
+-- Cấu trúc bảng cho bảng `user_cred`
 --
 
 CREATE TABLE `user_cred` (
@@ -256,18 +252,18 @@ CREATE TABLE `user_cred` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Indexes for dumped tables
+-- Chỉ mục cho các bảng đã đổ
 --
 
 --
--- Indexes for table `booking_confirmation`
+-- Chỉ mục cho bảng `booking_confirmation`
 --
 ALTER TABLE `booking_confirmation`
   ADD PRIMARY KEY (`confirmation_id`),
   ADD KEY `booking_id` (`booking_id`);
 
 --
--- Indexes for table `booking_order`
+-- Chỉ mục cho bảng `booking_order`
 --
 ALTER TABLE `booking_order`
   ADD PRIMARY KEY (`booking_id`),
@@ -275,109 +271,115 @@ ALTER TABLE `booking_order`
   ADD KEY `room_id` (`room_id`);
 
 --
--- Indexes for table `customer_details`
+-- Chỉ mục cho bảng `customer_details`
 --
 ALTER TABLE `customer_details`
   ADD PRIMARY KEY (`user_id`);
 
 --
--- Indexes for table `facilities`
+-- Chỉ mục cho bảng `facilities`
 --
 ALTER TABLE `facilities`
   ADD PRIMARY KEY (`facility_id`);
 
 --
--- Indexes for table `payment_details`
+-- Chỉ mục cho bảng `payment_details`
 --
 ALTER TABLE `payment_details`
   ADD PRIMARY KEY (`payment_id`),
   ADD KEY `booking_id` (`booking_id`);
 
 --
--- Indexes for table `rooms`
+-- Chỉ mục cho bảng `rooms`
 --
 ALTER TABLE `rooms`
   ADD PRIMARY KEY (`room_id`);
 
 --
--- Indexes for table `room_facilities`
+-- Chỉ mục cho bảng `room_facilities`
 --
 ALTER TABLE `room_facilities`
   ADD KEY `room_id` (`room_id`),
   ADD KEY `facility_id` (`facility_id`);
 
 --
--- Indexes for table `user_cred`
+-- Chỉ mục cho bảng `user_cred`
 --
 ALTER TABLE `user_cred`
   ADD PRIMARY KEY (`user_id`);
 
 --
--- AUTO_INCREMENT for dumped tables
+-- AUTO_INCREMENT cho các bảng đã đổ
 --
 
 --
--- AUTO_INCREMENT for table `booking_confirmation`
+-- AUTO_INCREMENT cho bảng `booking_confirmation`
 --
 ALTER TABLE `booking_confirmation`
   MODIFY `confirmation_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
--- AUTO_INCREMENT for table `booking_order`
+-- AUTO_INCREMENT cho bảng `booking_order`
 --
 ALTER TABLE `booking_order`
-  MODIFY `booking_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=23;
+  MODIFY `booking_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
--- AUTO_INCREMENT for table `facilities`
+-- AUTO_INCREMENT cho bảng `customer_details`
+--
+ALTER TABLE `customer_details`
+  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+
+--
+-- AUTO_INCREMENT cho bảng `facilities`
 --
 ALTER TABLE `facilities`
   MODIFY `facility_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
--- AUTO_INCREMENT for table `payment_details`
+-- AUTO_INCREMENT cho bảng `payment_details`
 --
 ALTER TABLE `payment_details`
-  MODIFY `payment_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `payment_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
--- AUTO_INCREMENT for table `rooms`
+-- AUTO_INCREMENT cho bảng `rooms`
 --
 ALTER TABLE `rooms`
   MODIFY `room_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
--- Constraints for dumped tables
+-- Các ràng buộc cho các bảng đã đổ
 --
 
 --
--- Constraints for table `booking_confirmation`
+-- Các ràng buộc cho bảng `booking_confirmation`
 --
 ALTER TABLE `booking_confirmation`
   ADD CONSTRAINT `booking_confirmation_ibfk_1` FOREIGN KEY (`booking_id`) REFERENCES `booking_order` (`booking_id`);
 
 --
--- Constraints for table `booking_order`
+-- Các ràng buộc cho bảng `booking_order`
 --
 ALTER TABLE `booking_order`
   ADD CONSTRAINT `booking_order_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `customer_details` (`user_id`),
   ADD CONSTRAINT `booking_order_ibfk_2` FOREIGN KEY (`room_id`) REFERENCES `rooms` (`room_id`);
 
 --
--- Constraints for table `payment_details`
+-- Các ràng buộc cho bảng `payment_details`
 --
 ALTER TABLE `payment_details`
   ADD CONSTRAINT `payment_details_ibfk_1` FOREIGN KEY (`booking_id`) REFERENCES `booking_order` (`booking_id`);
 
 --
--- Constraints for table `room_facilities`
+-- Các ràng buộc cho bảng `room_facilities`
 --
 ALTER TABLE `room_facilities`
   ADD CONSTRAINT `room_facilities_ibfk_1` FOREIGN KEY (`room_id`) REFERENCES `rooms` (`room_id`),
   ADD CONSTRAINT `room_facilities_ibfk_2` FOREIGN KEY (`facility_id`) REFERENCES `facilities` (`facility_id`);
 
 --
--- Constraints for table `user_cred`
+-- Các ràng buộc cho bảng `user_cred`
 --
 ALTER TABLE `user_cred`
   ADD CONSTRAINT `user_cred_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `customer_details` (`user_id`);
